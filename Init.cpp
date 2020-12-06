@@ -17,7 +17,6 @@
  * along with Penumbra Overture.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Init.h"
-#include "impl/CGProgram.h"
 #include "Player.h"
 #include "ButtonHandler.h"
 #include "MapHandler.h"
@@ -62,9 +61,13 @@
 
 #include "Version.h" // cool version .h that uses SVN revision #s
 
+#ifndef ANDROID
+#include "impl/CGProgram.h"
 // MUST include Last as Unix X11 header defined DestroyAll which blows up MapHandler.h class definition
 #include "impl/SDLGameSetup.h"
-
+#else
+#include "impl/AndroidGameSetup.h"
+#endif
 //Global init...
 cInit* gpInit;
 
@@ -129,6 +132,7 @@ bool CheckSupport(cInit *apInit)
 									kTranslate("StartUp", "ErrorAdd02");
 		return false;
 	}
+#ifndef ANDROID
 	Log("Checking Supported Profiles\n");
 	#define CG_CHECK(p) if (cgGLIsProfileSupported(p)) Log("  Profile " #p " is supported\n")
 	CG_CHECK(CG_PROFILE_VP20);
@@ -171,7 +175,7 @@ bool CheckSupport(cInit *apInit)
 	}
 	Log("Success!\n");
 	hplDelete( pTestVtxProg );
-
+#endif
 	return true;
 }
 
@@ -413,13 +417,17 @@ bool cInit::Init(tString asCommandLine)
 
 	Vars.AddBool("LowLevelSoundLogging", mpConfig->GetBool("Sound","LowLevelLogging", false));
 
+	iLowLevelGameSetup* pSetUp = NULL;
+#ifndef ANDROID
 	// Set CG Options
 	cCGProgram::SetFProfile(mpConfig->GetString("Graphics","ForceFP","AUTO"));
 	cCGProgram::SetVProfile(mpConfig->GetString("Graphics","ForceVP","AUTO"));
 
-	iLowLevelGameSetup *pSetUp = NULL;
+	pSetUp = hplNew(cSDLGameSetup, ());
+#else
+	pSetUp = hplNew(cAndroidGameSetup, ());
+#endif
 
-	pSetUp = hplNew( cSDLGameSetup, () );
 	mpGame = hplNew( cGame, ( pSetUp,Vars) );
     
 #ifdef  TIMELIMIT
@@ -453,7 +461,7 @@ bool cInit::Init(tString asCommandLine)
 	// LANGUAGE ////////////////////////////////
 	mpGame->GetResources()->SetLanguageFile(msLanguageFile);
 
-	Log("Initializing "PRODUCT_NAME"\n  Version\t"PRODUCT_VERSION"\n  Date\t"PRODUCT_DATE"\n");
+	Log("Initializing " PRODUCT_NAME "\n  Version\t" PRODUCT_VERSION "\n  Date\t" PRODUCT_DATE "\n");
 	//////////////////////////////////////////////7
 	// Check if computer supports game
 	if(CheckSupport(this)==false) return false;

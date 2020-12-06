@@ -20,7 +20,9 @@
 
 #include "Init.h"
 
+#ifndef ANDROID
 #include "SDL/SDL.h"
+#endif
 
 #ifdef WIN32
 	#include <windows.h>

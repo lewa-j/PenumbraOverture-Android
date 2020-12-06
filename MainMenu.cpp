@@ -31,6 +31,12 @@
 
 #include "OALWrapper/OAL_Init.h"
 
+//TODO remove after OALWrapper port
+#ifdef ANDROID
+const char* OAL_Info_GetDeviceName() { return ""; }
+std::vector<std::string> OAL_Info_GetOutputDevices() { return {}; }
+#endif
+
 float gfMenuFadeAmount;
 bool gbMustRestart=false;
 
