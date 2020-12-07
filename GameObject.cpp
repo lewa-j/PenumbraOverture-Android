@@ -1065,7 +1065,6 @@ void cGameObject::UpdateAttraction(float afTimeStep)
 
 kBeginSerialize(cGameObject_SaveData,iGameEntity_SaveData)
 kSerializeVar(mInteractMode, eSerializeType_Int32)
-kSerializeVar(mfMaxInteractDist, eSerializeType_Float32)
 kEndSerialize()
 
 //-----------------------------------------------------------------------

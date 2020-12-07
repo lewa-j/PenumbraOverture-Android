@@ -874,7 +874,7 @@ kEndSerialize()
 
 kBeginSerializeBase(cMapHandlerLoadedMap_GlobalSave)
 kSerializeVar(msName, eSerializeType_String)
-kSerializeVar(mfTime, eSerializeType_Float32)
+kSerializeVar(mfTime, eSerializeType_Float64)
 kEndSerialize()
 
 //-----------------------------------------------------------------------
@@ -891,7 +891,7 @@ kEndSerialize()
 //-----------------------------------------------------------------------
 
 kBeginSerializeBase(cMapHandler_GlobalSave)
-kSerializeVar(mfGameTime, eSerializeType_Float32)
+kSerializeVar(mfGameTime, eSerializeType_Float64)
 kSerializeVar(msCurrentMap, eSerializeType_String)
 
 kSerializeClassContainer(mvLoadedMaps,cMapHandlerLoadedMap_GlobalSave,eSerializeType_Class)

@@ -41,6 +41,8 @@ cGameMusic::cGameMusic()
 void cGameMusic::Reset()
 {
 	msFile = "";
+	mbLoop = false;
+	mfVolume = 0;
 }
 
 //-----------------------------------------------------------------------
