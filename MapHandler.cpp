@@ -158,7 +158,7 @@ cMapHandlerSoundCallback::cMapHandlerSoundCallback(cInit *apInit)
 	///////////////////////////////////////////
 	//Load all sounds that can heard by enemies
 	tString sFile = "sounds/EnemySounds.dat";
-	TiXmlDocument* pXmlDoc = hplNew( TiXmlDocument, (sFile.c_str()) );
+	TiXmlDocument* pXmlDoc = hplNew( TiXmlDocument, (GetPlatformPath(sFile).c_str()) );
 	if(pXmlDoc->LoadFile()==false){
 		Error("Couldn't load XML file '%s'!\n",sFile.c_str());
 		hplDelete( pXmlDoc );	return;

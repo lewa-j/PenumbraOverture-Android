@@ -64,7 +64,8 @@ Triggers.cpp
 
 LOCAL_STATIC_LIBRARIES := hpl1engine
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../OALWrapper/include
-LOCAL_CPPFLAGS := -std=c++11
+LOCAL_CPPFLAGS := -std=c++11 -D_DEBUG
+LOCAL_CPPFLAGS += -Wno-switch
 LOCAL_LDFLAGS :=
 #LOCAL_CPPFLAGS += -g -ggdb
 #LOCAL_LDFLAGS += -g -ggdb

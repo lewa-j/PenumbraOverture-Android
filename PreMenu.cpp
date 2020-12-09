@@ -23,6 +23,7 @@
 #include "ButtonHandler.h"
 #include "MainMenu.h"
 #include "MapHandler.h"
+#include "system/LowLevelSystem.h"
 
 //////////////////////////////////////////////////////////////////////////
 // CONSTRUCTORS
@@ -69,26 +70,29 @@ void cPreMenu::LoadConfig()
 {
 	////////////////////////////////////////////////
 	//Load the document
-	TiXmlDocument *pXmlDoc = hplNew( TiXmlDocument, ("config/startup.cfg") );
+	TiXmlDocument *pXmlDoc = hplNew( TiXmlDocument, (GetPlatformPath("config/startup.cfg").c_str()) );
 	if(pXmlDoc->LoadFile()==false){
 		Error("Couldn't load XML document 'config/startup.cfg'\n");
 		hplDelete( pXmlDoc );
+		return;
 	}
 
 	////////////////////////////////////////////////
 	//Load the root
 	TiXmlElement *pRootElem = pXmlDoc->FirstChildElement();
-	if(pRootElem==NULL){
+	if(pRootElem==nullptr){
 		Error("Couldn't load root from XML document 'config/startup.cfg'\n");
 		hplDelete( pXmlDoc );
+		return;
 	}
 
 	////////////////////////////////////////////////
 	//Load the Main element.
 	TiXmlElement *pMainElem = pRootElem->FirstChildElement("Main");
-	if(pMainElem==NULL){
+	if(pMainElem==nullptr){
 		Error("Couldn't load Main element from XML document 'config/startup.cfg'\n");
 		hplDelete( pXmlDoc );
+		return;
 	}
 
 	mbShowText = cString::ToBool(pMainElem->Attribute("ShowText"),false);
@@ -96,16 +100,17 @@ void cPreMenu::LoadConfig()
 	////////////////////////////////////////////////
 	//Load the Logos element.
 	TiXmlElement *pLogosParentElem = pRootElem->FirstChildElement("Logos");
-	if(pLogosParentElem==NULL){
+	if(pLogosParentElem==nullptr){
 		Error("Couldn't load Logs element from XML document 'config/startup.cfg'\n");
 		hplDelete( pXmlDoc );
+		return;
 	}
 
 
 	////////////////////////////////////////////////
 	//Get logos
 	TiXmlElement *pLogoElem = pLogosParentElem->FirstChildElement("Logo");
-	for(; pLogoElem != NULL; pLogoElem = pLogoElem->NextSiblingElement("Logo"))
+	for(; pLogoElem != nullptr; pLogoElem = pLogoElem->NextSiblingElement("Logo"))
 	{
 		tString sFile = cString::ToString(pLogoElem->Attribute("File"),"");
 		mvTexNames.push_back(sFile);

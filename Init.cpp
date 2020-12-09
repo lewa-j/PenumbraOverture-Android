@@ -254,7 +254,7 @@ bool cInit::Init(tString asCommandLine)
 
 	// CREATE NEEDED DIRS /////////////////////
 	gsUserSettingsPath = sPersonalDir + PERSONAL_RELATIVEROOT PERSONAL_RELATIVEGAME _W("settings.cfg");
-	#ifndef WIN32
+	#if !(defined( WIN32 ) || defined( ANDROID ))
 	// For Mac OS X and Linux move the OLD Episode 1 folder to Penumbra/Overture and symlink to the old path
 	if (FolderExists(sPersonalDir + PERSONAL_RELATIVEROOT _W("Penumbra Overture/Episode1"))
 			&& !IsFileLink(sPersonalDir + PERSONAL_RELATIVEROOT _W("Penumbra Overture/Episode1"))) {

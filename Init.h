@@ -58,6 +58,12 @@ class cMainMenu;
 	#define PERSONAL_RELATIVEPIECES_COUNT 0
 	#define PERSONAL_RELATIVEGAME_PARENT _W("Penumbra Overture/")
 	#define PERSONAL_RELATIVEGAME _W("Penumbra Overture/Episode1/")
+#elif defined(ANDROID)
+	#define PERSONAL_RELATIVEROOT
+	#define PERSONAL_RELATIVEPIECES
+	#define PERSONAL_RELATIVEPIECES_COUNT 0
+	#define PERSONAL_RELATIVEGAME_PARENT _W("Penumbra/")
+	#define PERSONAL_RELATIVEGAME _W("Penumbra/Overture/")
 #elif defined(__linux__)
 	#define PERSONAL_RELATIVEROOT _W(".frictionalgames/")
 	#define PERSONAL_RELATIVEPIECES _W(".frictionalgames"),
