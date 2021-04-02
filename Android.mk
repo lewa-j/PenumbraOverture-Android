@@ -1,4 +1,4 @@
-LOCAL_PATH:= $(call my-dir)/../..
+LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := penumbra
@@ -62,14 +62,16 @@ SaveTypes.cpp \
 TriggerHandler.cpp \
 Triggers.cpp
 
+LOCAL_ARM_MODE := arm
 LOCAL_STATIC_LIBRARIES := hpl1engine
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../OALWrapper/include
-LOCAL_CPPFLAGS := -std=c++11 -D_DEBUG
+LOCAL_CPPFLAGS := -std=c++11
 LOCAL_CPPFLAGS += -Wno-switch
 LOCAL_LDFLAGS :=
-#LOCAL_CPPFLAGS += -g -ggdb
-#LOCAL_LDFLAGS += -g -ggdb
+ifeq ($(APP_OPTIM),debug)
+	LOCAL_CPPFLAGS += -D_DEBUG
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 
-include $(LOCAL_PATH)/../HPL1Engine/android/jni/engine.mk
+include $(LOCAL_PATH)/../HPL1Engine/engine.mk

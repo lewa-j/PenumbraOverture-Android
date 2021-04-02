@@ -172,7 +172,7 @@ void cPlayerState_Grab::OnUpdate(float afTimeStep)
 	////////////////////////////
 	//The rotation
 	cVector3f vOmega = mpPushBody->GetAngularVelocity();
-	
+
 	//Set speed to 0
 	if(std::abs(mfYRotation) < 0.001f || mbRotateWithPlayer==false)
 	{
@@ -183,9 +183,9 @@ void cPlayerState_Grab::OnUpdate(float afTimeStep)
 		cVector3f vTorque = mRotatePid.Output(cVector3f(0,0,0) - vOmega, afTimeStep);
 		vTorque = vTorque - vOmega * 0.1f;
 		
-		mpPushBody->AddTorque(vTorque * mpPushBody->GetMass());
-		//vTorque = cMath::MatrixMul(mpPushBody->GetInertiaMatrix(),vTorque);
-		//mpPushBody->AddTorque(vTorque);
+		//mpPushBody->AddTorque(vTorque * mpPushBody->GetMass());
+		vTorque = cMath::MatrixMul(mpPushBody->GetInertiaMatrix(),vTorque);
+		mpPushBody->AddTorque(vTorque);
 	}
 	else
 	{
@@ -193,13 +193,13 @@ void cPlayerState_Grab::OnUpdate(float afTimeStep)
 		mRotatePid.i = 0.0f;
 		mRotatePid.d = 0.0f;
 
-		float fWantedSpeed = mfYRotation*6;
+		float fWantedSpeed = mfYRotation * 6;
 
 		cVector3f vTorque = mRotatePid.Output(cVector3f(0,fWantedSpeed,0) - vOmega, afTimeStep);
 
-		mpPushBody->AddTorque(vTorque * mpPushBody->GetMass());
-		//vTorque = cMath::MatrixMul(mpPushBody->GetInertiaMatrix(),vTorque);
-		//mpPushBody->AddTorque(vTorque);
+		//mpPushBody->AddTorque(vTorque * mpPushBody->GetMass());
+		vTorque = cMath::MatrixMul(mpPushBody->GetInertiaMatrix(),vTorque);
+		mpPushBody->AddTorque(vTorque);
 
 		mfYRotation -= vOmega.y * afTimeStep;
 	}
