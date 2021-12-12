@@ -231,7 +231,7 @@ cSaveHandler::cSaveHandler(cInit *apInit)  : iUpdateable("SaveHandler")
 	msSaveDir = _W("");
 	iLowLevelSystem *pLowLevelSystem = mpInit->mpGame->GetSystem()->GetLowLevel();
 
-	tWString sPeronalDir = GetSystemSpecialPath(eSystemPath_Personal);
+	tWString sPeronalDir = cPlatform::GetSystemSpecialPath(eSystemPath_Personal);
 	
 	if(sPeronalDir == _W(""))
 	{
@@ -264,9 +264,9 @@ cSaveHandler::cSaveHandler(cInit *apInit)  : iUpdateable("SaveHandler")
 	for(int i=0; i<lDirNum; ++i)
 	{
 		tWString sDir = sPeronalDir + vDirs[i];
-		if(FolderExists(sDir)) continue;
+		if(cPlatform::FolderExists(sDir)) continue;
 
-		if(CreateFolder(sDir)==false)
+		if(cPlatform::CreateFolder(sDir)==false)
 		{
 			//msSaveDir = _W("");
 			Warning("Couldn't create save folder '%s'! Saving to local\n",
@@ -645,7 +645,7 @@ void cSaveHandler::AutoSave(const tWString &asDir, int alMaxSaves)
 	tWString sMapName = mpInit->mpMapHandler->GetMapGameName();
 	sMapName = cString::ReplaceCharToW(sMapName,_W("\n"),_W(" "));
 	sMapName = cString::ReplaceCharToW(sMapName,_W(":"),_W(" "));
-	cDate date = mpInit->mpGame->GetSystem()->GetLowLevel()->GetDate();
+	cDate date = cPlatform::GetDate();
 	wchar_t sTemp[512];
 	swprintf(sTemp,512,_W("save/%ls/%ls %d-%02d-%02d_%02d.%02d.%02d_%02d.sav"),
 													asDir.c_str(),
@@ -736,7 +736,7 @@ void cSaveHandler::DeleteOldestIfMax(const tWString &asDir,const tWString &asMas
 		tWStringListIt it = lstFiles.begin();
 		for(; it != lstFiles.end(); ++it)
 		{
-			cDate date = FileModifiedDate(sPath + _W("/") +*it);
+			cDate date = cPlatform::FileModifiedDate(sPath + _W("/") +*it);
 			if(sOldest == _W("") || oldestDate > date)
 			{
 				sOldest = *it;
@@ -744,7 +744,7 @@ void cSaveHandler::DeleteOldestIfMax(const tWString &asDir,const tWString &asMas
 			}
 		}
 		
-		RemoveFile(sPath + _W("/") +sOldest);
+		cPlatform::RemoveFile(sPath + _W("/") +sOldest);
 	}
 }
 
@@ -767,7 +767,7 @@ tWString cSaveHandler::GetLatest(const tWString &asDir,const tWString &asMask)
 	for(; it != lstFiles.end(); ++it)
 	{
 		tWString sFile = *it;
-		cDate date = FileModifiedDate(sPath + _W("/") +*it);
+		cDate date = cPlatform::FileModifiedDate(sPath + _W("/") +*it);
 		if(sNewest == _W("") || newestDate < date)
 		{
 			sNewest = *it;

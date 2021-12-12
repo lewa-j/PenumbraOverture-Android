@@ -133,7 +133,7 @@ private:
 	cMeshEntity *mpHandEntity;
 	iCollideShape *mpHandShape;
 
-	iGpuProgram *mpVtxProgram;
+	iGpuProgram *mpProgram;
 
 	std::list<cVector3f> mlstProxyPos;
 };

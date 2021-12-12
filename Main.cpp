@@ -36,8 +36,8 @@ int hplMain(const tString& asCommandLine)
 	
 	if(bRet==false){
 		hplDelete( pInit->mpGame );
-		CreateMessageBoxW(_W("Error!"),pInit->msErrorMessage.c_str());
-		OpenBrowserWindow(_W("http://support.frictionalgames.com"));
+		cPlatform::CreateMessageBox(_W("Error!"),pInit->msErrorMessage.c_str());
+		cPlatform::OpenBrowserWindow(_W("http://support.frictionalgames.com"));
 		return 1;
 	}
 

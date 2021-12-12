@@ -119,8 +119,8 @@ void cDeathMenuButton_Continue::OnMouseDown()
 	else
 	{
 		tWString sSaveDir = mpInit->mpSaveHandler->GetSaveDir();
-		cDate dateAuto = FileModifiedDate(sSaveDir +sAuto);
-		cDate dateSpot = FileModifiedDate(sSaveDir +sSpot);
+		cDate dateAuto = cPlatform::FileModifiedDate(sSaveDir +sAuto);
+		cDate dateSpot = cPlatform::FileModifiedDate(sSaveDir +sSpot);
 
 		if(dateAuto > dateSpot) 
 			sFile = sAuto;

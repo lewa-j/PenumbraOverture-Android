@@ -57,9 +57,7 @@ cHapticGameCamera::cHapticGameCamera(cInit *apInit, cPlayer *apPlayer)
 	mpForce = apInit->mpGame->GetHaptic()->GetLowLevel()->CreateImpulseForce(0);
 	mpForce->SetForce(0);
 
-	mpVtxProgram = mpInit->mpGame->GetResources()->GetGpuProgramManager()->CreateProgram(
-												"Diffuse_Color_vp.cg","main",
-												eGpuProgramType_Vertex);
+	mpProgram = mpInit->mpGame->GetGraphics()->CreateGpuProgramFromShaders("Diffuse_Color", "Diffuse_Color.vert", "Diffuse_Color.frag");
 
 	mpPlayer = apPlayer;
 
@@ -226,16 +224,16 @@ void cHapticGameCamera::OnPostSceneDraw()
 		pLowGfx->SetBlendFunc(eBlendFunc_One,eBlendFunc_One);
 		pLowGfx->SetTexture(0, pSubMesh->GetMaterial()->GetTexture(eMaterialTexture_Diffuse));
 
-		mpVtxProgram->Bind();
-		mpVtxProgram->SetMatrixf(	"worldViewProj",eGpuProgramMatrix_ViewProjection,
-									eGpuProgramMatrixOp_Identity);
+		mpProgram->Bind();
+		mpProgram->SetMatrixf(	"worldViewProj",eGpuProgramMatrix::ViewProjection,
+									eGpuProgramMatrixOp::Identity);
 
 		pVtxBuff->Bind();
 		pVtxBuff->Draw();
 		pVtxBuff->Draw();
 		pVtxBuff->UnBind();
 
-		mpVtxProgram->UnBind();
+		mpProgram->UnBind();
 
 		pLowGfx->SetTexture(0, NULL);
 		pLowGfx->SetBlendActive(false);

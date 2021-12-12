@@ -712,8 +712,8 @@ void cMainMenuWidget_Continue::OnMouseDown(eMButton aButton)
 	else
 	{
 		tWString sSaveDir = mpInit->mpSaveHandler->GetSaveDir();
-		cDate dateAuto = FileModifiedDate(sSaveDir + sAuto);
-		cDate dateSpot = FileModifiedDate(sSaveDir + sSpot);
+		cDate dateAuto = cPlatform::FileModifiedDate(sSaveDir + sAuto);
+		cDate dateSpot = cPlatform::FileModifiedDate(sSaveDir + sSpot);
 		
 		if(dateAuto > dateSpot) 
 		{
@@ -864,7 +864,7 @@ public:
 		tWString sFile =	mpInit->mpSaveHandler->GetSaveDir() + msDir + 
 							_W("/") + gvSaveGameFileVec[mlNum][lSelected];
 
-		RemoveFile(sFile);
+		cPlatform::RemoveFile(sFile);
 		mpInit->mpMainMenu->UpdateWidgets();
 	}
 
@@ -895,7 +895,7 @@ public:
 		tWString sDest =	mpInit->mpSaveHandler->GetSaveDir() + _W("save/favorite/") + 
 							gvSaveGameFileVec[mlNum][lSelected];
 
-		CloneFile(sFile,sDest,true);
+		cPlatform::CloneFile(sFile,sDest,true);
 		mpInit->mpMainMenu->UpdateWidgets();
 	}
 
@@ -2961,7 +2961,7 @@ void cMainMenu::CreateWidgets()
 		for(; fileIt != lstFiles.end(); ++fileIt)
 		{
 			tWString sFile = *fileIt;
-			cDate date = FileModifiedDate(sFullPath+_W("/")+sFile);
+			cDate date = cPlatform::FileModifiedDate(sFullPath+_W("/")+sFile);
             
 			setTempFiles.insert(cTempFileAndData(sFile,date));
 		}

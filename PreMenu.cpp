@@ -70,7 +70,7 @@ void cPreMenu::LoadConfig()
 {
 	////////////////////////////////////////////////
 	//Load the document
-	TiXmlDocument *pXmlDoc = hplNew( TiXmlDocument, (GetPlatformPath("config/startup.cfg").c_str()) );
+	TiXmlDocument *pXmlDoc = hplNew( TiXmlDocument, (cPlatform::GetPlatformPath("config/startup.cfg").c_str()) );
 	if(pXmlDoc->LoadFile()==false){
 		Error("Couldn't load XML document 'config/startup.cfg'\n");
 		hplDelete( pXmlDoc );

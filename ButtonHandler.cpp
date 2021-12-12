@@ -214,7 +214,7 @@ void cButtonHandler::Update(float afTimeStep)
 	{
 		int lCount = 1;
 		tString sFileName = "screenshot000.bmp";
-		while(FileExists(cString::To16Char(sFileName)))
+		while(cPlatform::FileExists(cString::To16Char(sFileName)))
 		{
 			sFileName = "screenshot";
             if(lCount < 10)sFileName+= "00";

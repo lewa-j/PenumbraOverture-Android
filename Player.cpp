@@ -1051,7 +1051,7 @@ cTempCheckProxy gTempCheckProxy;
 void cPlayer::Update(float afTimeStep)
 {
 	cSystem *pSystem = mpInit->mpGame->GetSystem();
-	unsigned int lTime = pSystem->GetLowLevel()->GetTime();	
+	unsigned int lTime = cPlatform::GetApplicationTime();	
 	iPhysicsWorld *pPhysicsWorld = mpScene->GetWorld3D()->GetPhysicsWorld();
 
 	/////////////////////////////////////
@@ -1093,7 +1093,7 @@ void cPlayer::Update(float afTimeStep)
 	}
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);*/
 	
-	lTime = pSystem->GetLowLevel()->GetTime();			
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  misc\n");
 	//////////////////////
 	//Reset roll
@@ -1114,28 +1114,28 @@ void cPlayer::Update(float afTimeStep)
 	/////////////////////////////////////////////////
 	// Flashlight
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();			
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  flashlight");
 	mpFlashLight->Update(afTimeStep);
 	
 	/////////////////////////////////////////////////
 	//Glowstick
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();			
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  glowstick\n");
 	mpGlowStick->Update(afTimeStep);
 
 	/////////////////////////////////////////////////
 	//Flare
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();			
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  flare\n");
 	mpFlare->Update(afTimeStep);
 
 	/////////////////////////////////////////////////
 	// Lean
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  more misc\n");
 	mpLean->Update(afTimeStep);
 
@@ -1162,12 +1162,12 @@ void cPlayer::Update(float afTimeStep)
 	////////////////////////////////////////
 	// Hidden
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  hidden\n");
 	mpHidden->Update(afTimeStep);
 	
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  collide scripts\n");
 	/////////////////////////////////////////////////
 	// Collide script
@@ -1280,7 +1280,7 @@ void cPlayer::Update(float afTimeStep)
 
 	
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  Check For ground\n");
 	//////////////////////////////
 	//Cast ray and check for ground.
@@ -1297,7 +1297,7 @@ void cPlayer::Update(float afTimeStep)
 	//////////////////////////////
 	//Update movement
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  Movement\n");
 
 	if(mbMoving==false)	
@@ -1311,7 +1311,7 @@ void cPlayer::Update(float afTimeStep)
 	//////////////////////////////
 	//Update camera pos add
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  Camera pos\n");
 	if(mpCharBody)
 	{
@@ -1338,7 +1338,7 @@ void cPlayer::Update(float afTimeStep)
 	SetPickedBody(NULL);
 
 	//LogUpdate("  took %d ms\n",pSystem->GetLowLevel()->GetTime() - lTime);
-	lTime = pSystem->GetLowLevel()->GetTime();
+	lTime = cPlatform::GetApplicationTime();
 	//LogUpdate("  state %d\n",mState);
 	if(mpInit->mpInventory->IsActive() ==false && 
 		mpInit->mpNotebook->IsActive()==false)
@@ -1716,6 +1716,11 @@ void cPlayer::OnDraw()
 															sPortals.c_str());*/
 	
 	mvStates[mState]->OnDraw();
+
+	if (mpFont)
+	{
+		mpFont->Draw(cVector2f(5, 15), 12, cColor(1, 1), eFontAlign_Left, _W("FPS: %.1f"), mpInit->mpGame->GetFPS());
+	}
 }
 
 void cPlayer::OnPostSceneDraw()

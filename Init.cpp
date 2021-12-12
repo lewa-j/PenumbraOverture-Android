@@ -62,7 +62,6 @@
 #include "Version.h" // cool version .h that uses SVN revision #s
 
 #ifndef ANDROID
-#include "impl/CGProgram.h"
 // MUST include Last as Unix X11 header defined DestroyAll which blows up MapHandler.h class definition
 #include "impl/SDLGameSetup.h"
 #else
@@ -132,50 +131,7 @@ bool CheckSupport(cInit *apInit)
 									kTranslate("StartUp", "ErrorAdd02");
 		return false;
 	}
-#ifndef ANDROID
-	Log("Checking Supported Profiles\n");
-	#define CG_CHECK(p) if (cgGLIsProfileSupported(p)) Log("  Profile " #p " is supported\n")
-	CG_CHECK(CG_PROFILE_VP20);
-	CG_CHECK(CG_PROFILE_FP20);
 
-	CG_CHECK(CG_PROFILE_VP30);
-	CG_CHECK(CG_PROFILE_FP30);
-
-	CG_CHECK(CG_PROFILE_VP40);
-	CG_CHECK(CG_PROFILE_FP40);
-
-	CG_CHECK(CG_PROFILE_ARBVP1);
-	CG_CHECK(CG_PROFILE_ARBFP1);
-
-	CG_CHECK(CG_PROFILE_GLSLV);
-	CG_CHECK(CG_PROFILE_GLSLF);
-	CG_CHECK(CG_PROFILE_GLSLC);
-	#undef CG_CHECK
-
-	//Try compiling vertex shader
-	Log("Trying to load vertex program!\n");
-	iGpuProgram *pTestVtxProg = pLowLevelGraphics->CreateGpuProgram("Test",eGpuProgramType_Vertex);
-	if(	pTestVtxProg->CreateFromFile("core/programs/Fallback01_Diffuse_Light_p1_vp.cg","main")==false)
-	{
-		Log("Did not succeed!\n");
-		if(iMaterial::GetQuality() != eMaterialQuality_VeryLow)
-		{
-			apInit->msErrorMessage =	kTranslate("StartUp", "Error_BadVertexShader") + _W("\n") +
-										kTranslate("StartUp", "Error_BadVertexShader02") + _W("\n") +
-										kTranslate("StartUp", "Error_BadVertexShader03") + _W("\n") +
-										kTranslate("StartUp", "Error_BadVertexShader04") + _W("\n") +
-										kTranslate("StartUp", "ErrorAdd02");
-			hplDelete( pTestVtxProg );
-			
-			mpInit->mpConfig->SetInt("Graphics","ShaderQuality",eMaterialQuality_VeryLow);
-			mpInit->mpConfig->Save();
-
-			return false;
-		}
-	}
-	Log("Success!\n");
-	hplDelete( pTestVtxProg );
-#endif
 	return true;
 }
 
@@ -245,7 +201,7 @@ bool cInit::Init(tString asCommandLine)
 	SetWindowCaption("Penumbra Loading...");
 
 	// PERSONAL DIR /////////////////////
-	tWString sPersonalDir = GetSystemSpecialPath(eSystemPath_Personal);
+	tWString sPersonalDir = cPlatform::GetSystemSpecialPath(eSystemPath_Personal);
 	if(	cString::GetLastCharW(sPersonalDir) != _W("/") && 
 		cString::GetLastCharW(sPersonalDir) != _W("\\"))
 	{
@@ -279,9 +235,9 @@ bool cInit::Init(tString asCommandLine)
 	for(int i=0; i<lDirNum; ++i)
 	{
 		tWString sDir = sPersonalDir + vDirs[i];
-		if(FolderExists(sDir)) continue;
+		if(cPlatform::FolderExists(sDir)) continue;
 
-		CreateFolder(sDir);
+		cPlatform::CreateFolder(sDir);
 	}
 
 	// LOG FILE SETUP /////////////////////
@@ -292,7 +248,7 @@ bool cInit::Init(tString asCommandLine)
 	// MAIN INIT /////////////////////
 	
 	//Check for what settings file to use.
-	if(FileExists(gsUserSettingsPath))
+	if (cPlatform::FileExists(gsUserSettingsPath))
 	{
 		mpConfig = hplNew( cConfigFile, (gsUserSettingsPath) );
 		gbUsingUserSettings = true;
@@ -419,10 +375,6 @@ bool cInit::Init(tString asCommandLine)
 
 	iLowLevelGameSetup* pSetUp = NULL;
 #ifndef ANDROID
-	// Set CG Options
-	cCGProgram::SetFProfile(mpConfig->GetString("Graphics","ForceFP","AUTO"));
-	cCGProgram::SetVProfile(mpConfig->GetString("Graphics","ForceVP","AUTO"));
-
 	pSetUp = hplNew(cSDLGameSetup, ());
 #else
 	pSetUp = hplNew(cAndroidGameSetup, ());
@@ -437,7 +389,7 @@ bool cInit::Init(tString asCommandLine)
 	//Make sure there really is haptic support!
 	if(mbHasHaptics && cHaptic::GetIsUsed()==false)
 	{
-		CreateMessageBoxW(_W("Error!"),_W("No haptic support found. Mouse will be used instead!\n"));
+		cPlatform::CreateMessageBox(_W("Error!"),_W("No haptic support found. Mouse will be used instead!\n"));
 		mbHasHaptics = false;
 	}
 

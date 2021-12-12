@@ -158,7 +158,7 @@ cMapHandlerSoundCallback::cMapHandlerSoundCallback(cInit *apInit)
 	///////////////////////////////////////////
 	//Load all sounds that can heard by enemies
 	tString sFile = "sounds/EnemySounds.dat";
-	TiXmlDocument* pXmlDoc = hplNew( TiXmlDocument, (GetPlatformPath(sFile).c_str()) );
+	TiXmlDocument* pXmlDoc = hplNew( TiXmlDocument, (cPlatform::GetPlatformPath(sFile).c_str()) );
 	if(pXmlDoc->LoadFile()==false){
 		Error("Couldn't load XML file '%s'!\n",sFile.c_str());
 		hplDelete( pXmlDoc );	return;
@@ -340,7 +340,7 @@ bool cMapHandler::Load(const tString &asFile,const tString& asStartPos)
 	}
 #endif
 	
-	unsigned long lStartTime = mpInit->mpGame->GetSystem()->GetLowLevel()->GetTime();
+	unsigned long lStartTime = cPlatform::GetApplicationTime();
 
 	if(sMapName != msCurrentMap)
 	{
@@ -532,7 +532,7 @@ bool cMapHandler::Load(const tString &asFile,const tString& asStartPos)
 
 	//Log("After load and before preupdate:\n");
 
-	unsigned long lTime = mpInit->mpGame->GetSystem()->GetLowLevel()->GetTime() - lStartTime;
+	unsigned long lTime = cPlatform::GetApplicationTime() - lStartTime;
 	Log("Loading map '%s' took: %d ms\n",pWorld->GetFileName().c_str(),lTime);
 	
 	PreUpdate(fTimeSinceVisit);
@@ -1160,21 +1160,15 @@ void cMapHandler::RenderItemEffect()
 			iVertexBuffer *pVtxBuffer = pSubEntity->GetVertexBuffer();
 			iMaterial *pMaterial = pSubEntity->GetMaterial();
 			
-			iGpuProgram *pVtxProg = pMaterial->GetVertexProgram(eMaterialRenderType_Z,0,NULL);
+			iGpuProgram *pProg = pMaterial->GetProgram(eMaterialRenderType_Z, 0, NULL);
 			
-			if(pVtxProg)
+			if(pProg)
 			{
-				pVtxProg->Bind();
-				pVtxProg->SetMatrixf("worldViewProj",
-									eGpuProgramMatrix_ViewProjection,
-									eGpuProgramMatrixOp_Identity);
-			}
-
-			iGpuProgram *pFragProg = pMaterial->GetFragmentProgram(eMaterialRenderType_Z,0,NULL);
-			if(pFragProg)
-			{
-				pFragProg->SetColor3f("ambientColor", pItem->GetFlashAlpha());
-				pFragProg->Bind();
+				pProg->Bind();
+				pProg->SetMatrixf("worldViewProj",
+									eGpuProgramMatrix::ViewProjection,
+									eGpuProgramMatrixOp::Identity);
+				pProg->SetColor3f("ambientColor", pItem->GetFlashAlpha());
 			}
 			
 			pLowGfx->SetTexture(0,pMaterial->GetTexture(eMaterialTexture_Diffuse));
@@ -1183,8 +1177,7 @@ void cMapHandler::RenderItemEffect()
 			pVtxBuffer->Draw();
 			pVtxBuffer->UnBind();
 
-			if(pFragProg) pFragProg->UnBind();
-			if(pVtxProg) pVtxProg->UnBind();
+			if(pProg) pProg->UnBind();
 		}
 	}
 
@@ -1821,7 +1814,7 @@ void cMapHandler::PreUpdate(double afTimeSinceVisit)
 
 	mbPreUpdating = true;
 
-	unsigned long lStart = mpInit->mpGame->GetSystem()->GetLowLevel()->GetTime();
+	unsigned long lStart = cPlatform::GetApplicationTime();
 
 	//Enable all physic bodies
 	cPhysicsBodyIterator bodyIt = pPhysicsWorld->GetBodyIterator();
@@ -1864,7 +1857,7 @@ void cMapHandler::PreUpdate(double afTimeSinceVisit)
 		mpInit->mpGame->GetSound()->GetSoundHandler()->SetSilent(false);
 	}
 
-	unsigned long lTime = mpInit->mpGame->GetSystem()->GetLowLevel()->GetTime() - lStart;
+	unsigned long lTime = cPlatform::GetApplicationTime() - lStart;
 
 	//Log("PREUPDATE time: %d\n",lTime);
 	
