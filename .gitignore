@@ -4,5 +4,10 @@
 /*.xcodeproj/*.mode1v3
 /*.xcodeproj/*.pbxuser
 /.vs/
+/*.vcxproj.user
 /android/libs
 /android/obj
+android/.gradle/
+android/.externalNativeBuild/
+android/build
+android/local.properties
