@@ -244,7 +244,6 @@ bool cInit::Init(tString asCommandLine)
 	SetLogFile(sPersonalDir+PERSONAL_RELATIVEROOT PERSONAL_RELATIVEGAME _W("hpl.log"));
 	SetUpdateLogFile(sPersonalDir+PERSONAL_RELATIVEROOT PERSONAL_RELATIVEGAME _W("hpl_update.log"));
 
-	
 	// MAIN INIT /////////////////////
 	
 	//Check for what settings file to use.
@@ -392,7 +391,6 @@ bool cInit::Init(tString asCommandLine)
 		cPlatform::CreateMessageBox(_W("Error!"),_W("No haptic support found. Mouse will be used instead!\n"));
 		mbHasHaptics = false;
 	}
-
 
 	//Make sure hardware is really used.
 	mbUseSoundHardware = mpGame->GetSound()->GetLowLevel()->IsHardwareAccelerated();

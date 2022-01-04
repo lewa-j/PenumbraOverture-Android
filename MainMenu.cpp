@@ -167,14 +167,14 @@ void cMainMenuWidget_MainButton::OnMouseDown(eMButton aButton)
 
 void cMainMenuWidget_MainButton::OnDraw()
 {
-	mpFont->Draw(mvPositon,mvFontSize,cColor(0.62f + mfAlpha*0.3f,1),eFontAlign_Center,msText.c_str());
+	mpFont->Draw(mvPositon, mvFontSize, cColor(0.62f + mfAlpha * 0.3f, 1), eFontAlign_Center, msText.c_str());
 
 	float fAdd = sin(mfOverTimer) * 16.0f;
 
-	if(mfAlpha >0)
+	if (mfAlpha > 0)
 	{
-		mpFont->Draw(mvPositon + cVector3f(fAdd,0,-1),mvFontSize,cColor(0.56f,0.35f * mfAlpha),eFontAlign_Center,msText.c_str());
-		mpFont->Draw(mvPositon + cVector3f(-fAdd,0,-1),mvFontSize,cColor(0.56f,0.35f * mfAlpha),eFontAlign_Center,msText.c_str());
+		mpFont->Draw(mvPositon + cVector3f(fAdd, 0, -1), mvFontSize, cColor(0.56f, 0.35f * mfAlpha), eFontAlign_Center, msText.c_str());
+		mpFont->Draw(mvPositon + cVector3f(-fAdd, 0, -1), mvFontSize, cColor(0.56f, 0.35f * mfAlpha), eFontAlign_Center, msText.c_str());
 	}
 }
 
@@ -1177,7 +1177,7 @@ public:
 		int lCurrentNum = 0;
 
 		//get current num
-        for(int i=0; i<mlDevices.size(); ++i)
+		for (int i = 0; i < mlDevices.size(); ++i)
 		{
 			if(mlDevices[i] == mpInit->msDeviceName)
 			{
@@ -1189,12 +1189,14 @@ public:
 		if(aButton == eMButton_Left)
 		{
 			lCurrentNum++;
-			if(lCurrentNum >= mlDevices.size()) lCurrentNum =0;
+			if (lCurrentNum >= mlDevices.size())
+				lCurrentNum = 0;
 		}
 		else if(aButton == eMButton_Right)
 		{
 			lCurrentNum--;
-			if(lCurrentNum < 0) lCurrentNum =mlDevices.size()-1;
+			if(lCurrentNum < 0)
+				lCurrentNum = mlDevices.size() - 1;
 		}
 
 		mpInit->msDeviceName = mlDevices[lCurrentNum];
@@ -2045,12 +2047,12 @@ cMainMenu::cMainMenu(cInit *apInit)  : iUpdateable("MainMenu")
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
 
 	//Load graphics
-	mpGfxBlackQuad = mpDrawer->CreateGfxObject("effect_black.bmp","diffalpha2d");
-	mpGfxMouse = mpDrawer->CreateGfxObject("player_crosshair_pointer.bmp","diffalpha2d");
+	mpGfxBlackQuad = mpDrawer->CreateGfxObject("effect_black.bmp", "diffalpha2d");
+	mpGfxMouse = mpDrawer->CreateGfxObject("player_crosshair_pointer.bmp", "diffalpha2d");
 
-	mpGfxRainDrop = mpDrawer->CreateGfxObject("menu_rain_drop.jpg","diffadditive2d");
-	mpGfxRainSplash = mpDrawer->CreateGfxObject("menu_rain_splash.jpg","diffadditive2d");
-	mpGfxSnowFlake = mpDrawer->CreateGfxObject("menu_snow_flake.jpg","diffadditive2d");
+	mpGfxRainDrop = mpDrawer->CreateGfxObject("menu_rain_drop.jpg", "diffadditive2d");
+	mpGfxRainSplash = mpDrawer->CreateGfxObject("menu_rain_splash.jpg", "diffadditive2d");
+	mpGfxSnowFlake = mpDrawer->CreateGfxObject("menu_snow_flake.jpg", "diffadditive2d");
 	
 	//Init effects
 	mvRainDrops.resize(70);
@@ -2073,8 +2075,8 @@ cMainMenu::cMainMenu(cInit *apInit)  : iUpdateable("MainMenu")
 	}
 	
 	//load fonts
-	mpFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("font_menu_small.fnt",20,32,255);
-	mpTipFont  = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("verdana.fnt");
+	mpFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("font_menu_small.fnt", 20, 32, 255);
+	mpTipFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("verdana.fnt");
 
 	//////////////////////////////////
 	//Init widgets
@@ -2136,14 +2138,14 @@ void cMainMenu::OnPostSceneDraw()
 {
 	mpInit->mpGraphicsHelper->ClearScreen(cColor(0,0));
 	
-	mpInit->mpGraphicsHelper->DrawTexture(mpLogo,0,cVector3f(800,180,30),cColor(1,1));
-	mpInit->mpGraphicsHelper->DrawTexture(mpBackground,cVector3f(0,180,0),cVector3f(800,420,0),cColor(1,1));
+	mpInit->mpGraphicsHelper->DrawTexture(mpLogo, 0, cVector3f(800, 180, 30), cColor(1, 1));
+	mpInit->mpGraphicsHelper->DrawTexture(mpBackground, cVector3f(0, 180, 0), cVector3f(800, 420, 0), cColor(1, 1));
 
 	////////////////////////////////
 	// Fade in
 	if (mbFadeIn)
 	{
-		mpDrawer->DrawGfxObject(mpGfxBlackQuad,cVector3f(0,0,120),cVector2f(800,600), cColor(1,1-mfFadeAmount));
+		mpDrawer->DrawGfxObject(mpGfxBlackQuad, cVector3f(0, 0, 120), cVector2f(800, 600), cColor(1, 1 - mfFadeAmount));
 	}
 }
 

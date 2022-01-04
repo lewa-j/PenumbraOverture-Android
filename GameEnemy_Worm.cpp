@@ -438,7 +438,7 @@ void cGameEnemyState_Worm_Hunt::OnPostSceneDraw()
 
 	cMatrixf mtxCollider = cMath::MatrixMul(pCamera->GetViewMatrix(),mtxOffset);
 
-	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix_ModelView,mtxCollider);
+	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix::ModelView,mtxCollider);
 
 	cVector3f vSize = mpEnemyWorm->GetAttackShape()->GetSize();
 	mpInit->mpGame->GetGraphics()->GetLowLevel()->DrawBoxMaxMin(vSize*0.5f,vSize*-0.5f,

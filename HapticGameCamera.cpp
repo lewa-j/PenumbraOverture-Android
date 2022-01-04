@@ -213,15 +213,15 @@ void cHapticGameCamera::OnPostSceneDraw()
 	if(	crossHairState != eCrossHairState_Inactive &&
 		crossHairState != eCrossHairState_None)
 	{
-		pLowGfx->SetMatrix(eMatrix_ModelView,cMath::MatrixMul(	pCam->GetViewMatrix(),
+		pLowGfx->SetMatrix(eMatrix::ModelView,cMath::MatrixMul(	pCam->GetViewMatrix(),
 																mpHandEntity->GetWorldMatrix()));
 		cSubMesh *pSubMesh = mpHandEntity->GetMesh()->GetSubMesh(0);
 		iVertexBuffer *pVtxBuff = pSubMesh->GetVertexBuffer();
 
 		pLowGfx->SetDepthTestActive(true);
-		pLowGfx->SetDepthTestFunc(eDepthTestFunc_LessOrEqual);
+		pLowGfx->SetDepthTestFunc(eDepthTestFunc::LessOrEqual);
 		pLowGfx->SetBlendActive(true);
-		pLowGfx->SetBlendFunc(eBlendFunc_One,eBlendFunc_One);
+		pLowGfx->SetBlendFunc(eBlendFunc::One,eBlendFunc::One);
 		pLowGfx->SetTexture(0, pSubMesh->GetMaterial()->GetTexture(eMaterialTexture_Diffuse));
 
 		mpProgram->Bind();
@@ -230,7 +230,7 @@ void cHapticGameCamera::OnPostSceneDraw()
 
 		pVtxBuff->Bind();
 		pVtxBuff->Draw();
-		pVtxBuff->Draw();
+		pVtxBuff->Draw(); // why second time?
 		pVtxBuff->UnBind();
 
 		mpProgram->UnBind();

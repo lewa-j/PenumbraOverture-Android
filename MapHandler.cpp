@@ -1131,7 +1131,7 @@ void cMapHandler::RenderItemEffect()
 	pLowGfx->SetDepthWriteActive(false);
 
 	pLowGfx->SetBlendActive(true);
-	pLowGfx->SetBlendFunc(eBlendFunc_One,eBlendFunc_One);
+	pLowGfx->SetBlendFunc(eBlendFunc::One,eBlendFunc::One);
 
 	pLowGfx->SetActiveTextureUnit(0);
 	pLowGfx->SetTextureEnv(eTextureParam_ColorSource1,eTextureSource_Constant);
@@ -1151,7 +1151,7 @@ void cMapHandler::RenderItemEffect()
 
 		pLowGfx->SetTextureConstantColor(cColor(pItem->GetFlashAlpha(),0));
 		
-		pLowGfx->SetMatrix(eMatrix_ModelView, cMath::MatrixMul(pCam->GetViewMatrix(), 
+		pLowGfx->SetMatrix(eMatrix::ModelView, cMath::MatrixMul(pCam->GetViewMatrix(), 
 														pMeshEntity->GetWorldMatrix()));
 		for(int i=0; i< pMeshEntity->GetMesh()->GetSubMeshNum(); i++)
 		{
@@ -1202,7 +1202,7 @@ void cMapHandler::OnPostSceneDraw()
 
 
 	cCamera3D *pCam = static_cast<cCamera3D*>(mpScene->GetCamera());
-	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix_ModelView, pCam->GetViewMatrix());
+	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix::ModelView, pCam->GetViewMatrix());
 
 	//mpScene->GetWorld3D()->GetPhysicsWorld()->RenderDebugGeometry(
 	//	mpInit->mpGame->GetGraphics()->GetLowLevel(),cColor(1,0.5f,1));

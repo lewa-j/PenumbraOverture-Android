@@ -37,7 +37,7 @@ cGraphicsHelper::cGraphicsHelper(cInit *apInit)
 
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
 
-	mpFont =mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("font_menu_small.fnt");
+	mpFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("font_menu_small.fnt");
 
 	mvVtx.resize(4);
 }
@@ -67,8 +67,8 @@ void cGraphicsHelper::DrawTexture(iTexture *apTex, const cVector3f& avPos, const
 								  const cColor &aColor)
 {
 	mpLowLevelGfx->SetDepthTestActive(false);
-	mpLowLevelGfx->PushMatrix(eMatrix_ModelView);
-	mpLowLevelGfx->SetIdentityMatrix(eMatrix_ModelView);
+	mpLowLevelGfx->PushMatrix(eMatrix::ModelView);
+	mpLowLevelGfx->SetIdentityMatrix(eMatrix::ModelView);
 	mpLowLevelGfx->SetOrthoProjection(mpLowLevelGfx->GetVirtualSize(),-1000,1000);
 	
 	mvVtx[0] = cVertex(avPos + cVector3f(0,0,0),	cVector2f(0.01f,0.01f),aColor );
@@ -78,31 +78,33 @@ void cGraphicsHelper::DrawTexture(iTexture *apTex, const cVector3f& avPos, const
 
 	mpLowLevelGfx->SetBlendActive(false);
 	
-	for(int i=0;i<6;++i) mpLowLevelGfx->SetTexture(i,NULL);
+	for (int i = 1; i < 6; ++i)
+		mpLowLevelGfx->SetTexture(i, NULL);
 
-	mpLowLevelGfx->SetTexture(0,apTex);
+	mpLowLevelGfx->SetTexture(0, apTex);
 
 	mpLowLevelGfx->DrawQuad(mvVtx);
 
-	mpLowLevelGfx->SetTexture(0,NULL);
+	mpLowLevelGfx->SetTexture(0, NULL);
 
-	mpLowLevelGfx->PopMatrix(eMatrix_ModelView);
+	mpLowLevelGfx->PopMatrix(eMatrix::ModelView);
 }
 
 //-----------------------------------------------------------------------
 
 void cGraphicsHelper::DrawLoadingScreen(const tString &asFile)
 {
-	iTexture *pTex= NULL;
+	iTexture *pTex = NULL;
 	
-	if(asFile != "")
-		pTex = mpTexManager->Create2D(asFile,false);
+	if (asFile != "")
+		pTex = mpTexManager->Create2D(asFile, false);
 	
-	if(pTex || asFile == "")
+	if (pTex || asFile == "")
 	{
-		ClearScreen(cColor(0,0));
+		ClearScreen(cColor(0, 0));
 		
-		if(pTex) DrawTexture(pTex,cVector3f(0,0,0),cVector2f(800,600),cColor(1,1));
+		if (pTex)
+			DrawTexture(pTex, cVector3f(0, 0, 0), cVector2f(800, 600), cColor(1, 1));
 		
 		mpFont->Draw(cVector3f(400,300,50),22,cColor(1,1),eFontAlign_Center,
 					_W("%ls"),kTranslate("LoadTexts", "Loading").c_str());

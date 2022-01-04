@@ -218,6 +218,11 @@
     <ClInclude Include="TriggerHandler.h" />
     <ClInclude Include="Triggers.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HPL1Engine\HPL.vcxproj">
+      <Project>{0780dec5-a930-4721-9364-17a49d2a4e60}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

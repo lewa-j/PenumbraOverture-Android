@@ -378,7 +378,7 @@ void cGameItem::OnPostSceneDraw()
 	pLowGfx->SetDepthWriteActive(false);
 
 	pLowGfx->SetBlendActive(true);
-	pLowGfx->SetBlendFunc(eBlendFunc_One,eBlendFunc_One);
+	pLowGfx->SetBlendFunc(eBlendFunc::One,eBlendFunc::One);
 
 	for(int i=0; i<  mpMeshEntity->GetMesh()->GetSubMeshNum(); i++)
 	{

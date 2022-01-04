@@ -511,7 +511,7 @@ void cGameEnemyState_Spider_Attack::OnPostSceneDraw()
 	
 	cMatrixf mtxCollider = cMath::MatrixMul(pCamera->GetViewMatrix(),mtxOffset);
 
-	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix_ModelView,mtxCollider);
+	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix::ModelView,mtxCollider);
 
 	cVector3f vSize = mpEnemySpider->GetAttackShape()->GetSize();
 	mpInit->mpGame->GetGraphics()->GetLowLevel()->DrawBoxMaxMin(vSize*0.5f,vSize*-0.5f,

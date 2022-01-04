@@ -466,7 +466,7 @@ void cHudModel_WeaponMelee::PostSceneDraw()
 	
 	cMatrixf mtxCollider = cMath::MatrixMul(pCamera->GetViewMatrix(),mtxDamage);
 		
-	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix_ModelView,mtxCollider);
+	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix::ModelView,mtxCollider);
 
 	cVector3f vSize = mvAttacks[mlCurrentAttack].mvDamageSize;
 	

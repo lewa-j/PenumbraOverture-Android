@@ -4,6 +4,8 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Penumbra", "Penumbra.vcxproj", "{C6E72C29-38A3-4897-AA05-E87B0323AA71}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HPL", "..\HPL1Engine\HPL.vcxproj", "{0780DEC5-A930-4721-9364-17A49D2A4E60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -14,6 +16,10 @@ Global
 		{C6E72C29-38A3-4897-AA05-E87B0323AA71}.Debug|x86.Build.0 = Debug|Win32
 		{C6E72C29-38A3-4897-AA05-E87B0323AA71}.Release|x86.ActiveCfg = Release|Win32
 		{C6E72C29-38A3-4897-AA05-E87B0323AA71}.Release|x86.Build.0 = Release|Win32
+		{0780DEC5-A930-4721-9364-17A49D2A4E60}.Debug|x86.ActiveCfg = Debug|Win32
+		{0780DEC5-A930-4721-9364-17A49D2A4E60}.Debug|x86.Build.0 = Debug|Win32
+		{0780DEC5-A930-4721-9364-17A49D2A4E60}.Release|x86.ActiveCfg = Release|Win32
+		{0780DEC5-A930-4721-9364-17A49D2A4E60}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -636,11 +636,11 @@ void cPlayerState_WeaponMeleeHaptX::OnPostSceneDraw()
 	mpInit->mpGame->GetGraphics()->GetLowLevel()->DrawBoxMaxMin(boundingVolume.GetMax(),boundingVolume.GetMin(),cColor(0,0,1,1));
 
 	
-	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix_ModelView,mtxCollider);
+	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix::ModelView,mtxCollider);
 	mpInit->mpGame->GetGraphics()->GetLowLevel()->DrawBoxMaxMin(vSize*0.5f,vSize*-0.5f,cColor(0,1,0,1));
 
 
-	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix_ModelView,pCamera->GetViewMatrix());
+	mpInit->mpGame->GetGraphics()->GetLowLevel()->SetMatrix(eMatrix::ModelView,pCamera->GetViewMatrix());
 
 
 	//mpBody->RenderDebugGeometry(mpInit->mpGame->GetGraphics()->GetLowLevel(),cColor(0,1,0,1));

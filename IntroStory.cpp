@@ -286,7 +286,7 @@ void cIntroImage::OnDraw()
 	///Draw
 	mpLowGfx->SetTexture(0, mpTexture);
 	mpLowGfx->SetBlendActive(true);
-	mpLowGfx->SetBlendFunc(eBlendFunc_SrcAlpha,eBlendFunc_OneMinusSrcAlpha);
+	mpLowGfx->SetBlendFunc(eBlendFunc::SrcAlpha,eBlendFunc::OneMinusSrcAlpha);
 
 	mpLowGfx->DrawQuad(mvVtxVec);
 
@@ -301,7 +301,7 @@ void cIntroImage::OnDraw()
 		
 		mpLowGfx->SetTexture(0, NULL);
 
-		mpLowGfx->SetBlendFunc(eBlendFunc_One,eBlendFunc_One);
+		mpLowGfx->SetBlendFunc(eBlendFunc::One,eBlendFunc::One);
 
 		mpLowGfx->DrawQuad(mvVtxVec);
 
@@ -497,8 +497,8 @@ void cIntroStory::OnPostSceneDraw()
 	mpLowGfx->ClearScreen();
 
 	mpLowGfx->SetDepthTestActive(false);
-	mpLowGfx->PushMatrix(eMatrix_ModelView);
-	mpLowGfx->SetIdentityMatrix(eMatrix_ModelView);
+	mpLowGfx->PushMatrix(eMatrix::ModelView);
+	mpLowGfx->SetIdentityMatrix(eMatrix::ModelView);
 	mpLowGfx->SetOrthoProjection(mpLowGfx->GetVirtualSize(),-1000,1000);
 	
 	for(int i=0; i< INTRO_IMAGE_NUM; ++i)
@@ -509,7 +509,7 @@ void cIntroStory::OnPostSceneDraw()
 	mpInit->mpGraphicsHelper->DrawTexture(mpBlackTexture,cVector3f(0,0,140),cVector2f(800,75),cColor(1,1));
 	mpInit->mpGraphicsHelper->DrawTexture(mpBlackTexture,cVector3f(0,525,140),cVector2f(800,75),cColor(1,1));
 
-	mpLowGfx->PopMatrix(eMatrix_ModelView);
+	mpLowGfx->PopMatrix(eMatrix::ModelView);
 }
 
 //-----------------------------------------------------------------------
