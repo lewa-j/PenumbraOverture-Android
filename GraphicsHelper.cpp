@@ -103,10 +103,12 @@ void cGraphicsHelper::DrawLoadingScreen(const tString &asFile)
 	{
 		ClearScreen(cColor(0, 0));
 		
+		cVector2f size = mpLowLevelGfx->GetVirtualSize();
+
 		if (pTex)
-			DrawTexture(pTex, cVector3f(0, 0, 0), cVector2f(800, 600), cColor(1, 1));
+			DrawTexture(pTex, cVector3f(0, 0, 0), size, cColor(1, 1));
 		
-		mpFont->Draw(cVector3f(400,300,50),22,cColor(1,1),eFontAlign_Center,
+		mpFont->Draw(cVector3f(size.x / 2, size.y / 2, 50), 22, cColor(1, 1), eFontAlign_Center,
 					_W("%ls"),kTranslate("LoadTexts", "Loading").c_str());
 
 		mpDrawer->DrawAll();

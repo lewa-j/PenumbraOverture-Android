@@ -62,8 +62,9 @@ class cMainMenu;
 	#define PERSONAL_RELATIVEROOT
 	#define PERSONAL_RELATIVEPIECES
 	#define PERSONAL_RELATIVEPIECES_COUNT 0
-	#define PERSONAL_RELATIVEGAME_PARENT _W("Penumbra/")
-	#define PERSONAL_RELATIVEGAME _W("Penumbra/Overture/")
+	//cPlatform::GetSystemSpecialPath(eSystemPath_Personal) already includes path specific for the app
+	#define PERSONAL_RELATIVEGAME_PARENT
+	#define PERSONAL_RELATIVEGAME
 #elif defined(__linux__)
 	#define PERSONAL_RELATIVEROOT _W(".frictionalgames/")
 	#define PERSONAL_RELATIVEPIECES _W(".frictionalgames"),

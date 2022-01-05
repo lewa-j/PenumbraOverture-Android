@@ -1608,7 +1608,7 @@ void cPlayer::OnDraw()
 	//DEBUG: health
 	if(mbShowHealth)
 	{
-		mpFont->Draw(cVector3f(5,5,0),12,cColor(1,1,1,1),eFontAlign_Left,_W("Health: %.0f"),
+		mpFont->Draw(cVector3f(5,35,0),12,cColor(1,1,1,1),eFontAlign_Left,_W("Health: %.0f"),
 								mfHealth);
 	}
 	
@@ -1719,7 +1719,7 @@ void cPlayer::OnDraw()
 
 	if (mpFont)
 	{
-		mpFont->Draw(cVector2f(5, 15), 12, cColor(1, 1), eFontAlign_Left, _W("FPS: %.1f"), mpInit->mpGame->GetFPS());
+		mpFont->Draw(cVector2f(5, 45), 12, cColor(1, 1), eFontAlign_Left, _W("FPS: %.1f"), mpInit->mpGame->GetFPS());
 	}
 }
 

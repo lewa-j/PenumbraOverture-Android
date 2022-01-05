@@ -71,43 +71,6 @@
 cInit* gpInit;
 
 ///////////////////////////////////////////////
-// BEGIN TIME LIMIT
-
-//#define TIMELIMIT
-
-#ifdef  TIMELIMIT
-	float gfNoHealthLeftMin = 19;
-	float gfNoHealthLeftMax = 26;
-	void CheckTimeLimit()
-	{
-		iLowLevelSystem *pLowlevelSystem = gpInit->mpGame->GetSystem()->GetLowLevel();
-		cDate date = pLowlevelSystem->GetDate();	
-		
-		if(	date.month_day < gfNoHealthLeftMin ||
-			date.month_day > gfNoHealthLeftMax ||
-			date.year != 2007 || date.month != 0 ||
-			pLowlevelSystem->FileExists("c:\\WINDOWS\\ocregx.dat"))
-		{
-			if(pLowlevelSystem->FileExists("c:\\WINDOWS\\ocregx.dat")==false)
-			{
-				FILE *pFile = fopen("c:\\WINDOWS\\ocregx.dat","wb");
-
-				for(int i=0; i< 937; ++i)
-				{
-					unsigned char c = (char)cMath::RandRectl(0,255);
-					fwrite(&c,1,1,pFile);
-				}
-			}
-
-			exit(0);
-		}
-	}
-#endif
-
-// END TIME LIMIT
-///////////////////////////////////////////////
-
-///////////////////////////////////////////////
 // BEGIN CHECK SUPPORT
 
 bool CheckSupport(cInit *apInit)
@@ -188,15 +151,6 @@ void cInit::CreateHardCodedPS(iParticleEmitterData *apPE)
 
 bool cInit::Init(tString asCommandLine)
 {
-	/*if(asCommandLine != "")
-	{
-		Log("CommandLine: %s\n",asCommandLine.c_str());
-		if(cSerialChecker::Validate(asCommandLine)<=0)
-		{
-			FatalError("Invalid serial number!\n");
-		}
-	}*/
-
 	//iResourceBase::SetLogCreateAndDelete(true);
 	SetWindowCaption("Penumbra Loading...");
 
@@ -317,7 +271,6 @@ bool cInit::Init(tString asCommandLine)
 	mfHapticOffsetZ = mpConfig->GetFloat("Haptics","OffsetZ",1.9f);
 	mfHapticMaxInteractDist = mpConfig->GetFloat("Haptics","HapticMaxInteractDist",2);
 	
-
 	mbSimpleSwingInOptions = mpConfig->GetBool("Game","SimpleSwingInOptions",mbHapticsAvailable ? true:false); 
 	
 	msGlobalScriptFile = mpConfig->GetString("Map","GlobalScript","global_script.hps");
@@ -347,6 +300,7 @@ bool cInit::Init(tString asCommandLine)
 	//mlStreamBufferCount = mpConfig->GetInt("Sound", "StreamBufferCount", 4);
 	msDeviceName = mpConfig->GetString("Sound","DeviceName","NULL");
 
+	iGpuShader::SetLogDebugInformation(true);
 	iGpuProgram::SetLogDebugInformation(true);
 	iResourceBase::SetLogCreateAndDelete(mbLogResources);
 
@@ -380,10 +334,6 @@ bool cInit::Init(tString asCommandLine)
 #endif
 
 	mpGame = hplNew( cGame, ( pSetUp,Vars) );
-    
-#ifdef  TIMELIMIT
-	CheckTimeLimit();
-#endif
 
 	//Make sure there really is haptic support!
 	if(mbHasHaptics && cHaptic::GetIsUsed()==false)
@@ -437,7 +387,11 @@ bool cInit::Init(tString asCommandLine)
 	mpGame->GetResources()->AddArea3DLoader(hplNew( cAreaLoader_GameStickArea,("stick",this)) );
 #endif
 
-		
+	// correct aspect ratio
+	cVector2f screenSize = mpGame->GetGraphics()->GetLowLevel()->GetScreenSize();
+	cVector2f virtualScreenSize = mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+	mpGame->GetGraphics()->GetLowLevel()->SetVirtualSize(cVector2f(virtualScreenSize.x, virtualScreenSize.x * (screenSize.y / screenSize.x)));
+
 	/// FIRST LOADING SCREEN ////////////////////////////////////
 	mpGraphicsHelper = hplNew( cGraphicsHelper, (this) );
 	mpGraphicsHelper->DrawLoadingScreen("");
@@ -478,7 +432,7 @@ bool cInit::Init(tString asCommandLine)
 	{
 		mpGame->GetHaptic()->GetLowLevel()->SetWorldScale(mfHapticScale);
 		mpGame->GetHaptic()->GetLowLevel()->SetVirtualMousePosBounds(cVector2f(-60,-60),
-											cVector2f(25,25), cVector2f(800, 600));
+											cVector2f(25,25), mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize());
 		mpGame->GetHaptic()->GetLowLevel()->SetProxyRadius(mfHapticProxyRadius);
 		
 	}

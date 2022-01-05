@@ -101,7 +101,7 @@ void cPreMenu::LoadConfig()
 	//Load the Logos element.
 	TiXmlElement *pLogosParentElem = pRootElem->FirstChildElement("Logos");
 	if(pLogosParentElem==nullptr){
-		Error("Couldn't load Logs element from XML document 'config/startup.cfg'\n");
+		Error("Couldn't load Logos element from XML document 'config/startup.cfg'\n");
 		hplDelete( pXmlDoc );
 		return;
 	}
@@ -134,12 +134,12 @@ void cPreMenu::Reset()
 	mlCurrentLogo = 0;
 
 	mlCurrentTextChar = 0;
-	mfNewCharCount =0;
-	mfClickCount =0;
+	mfNewCharCount = 0;
+	mfClickCount = 0;
 
-	mfFontColor =1;
+	mfFontColor = 1;
 	mfLogoSizeFactor = 1.05f;
-	mvecLogoSize = cVector3f(1024,301,0)*mfLogoSizeFactor;
+	mvecLogoSize = cVector3f(1024, 301, 0) * mfLogoSizeFactor;
 	mfLogoFade = 1;
 	mfEpFade = 0;
 
@@ -168,12 +168,12 @@ void cPreMenu::Reset()
 	mpRaindropGfx = mpInit->mpGame->GetGraphics()->GetDrawer()->CreateGfxObject("menu_rain_drop.jpg","diffadditive2d");
 	mpFlashGfx = mpInit->mpGame->GetGraphics()->GetDrawer()->CreateGfxObject("effect_white.jpg","diffadditive2d");
 
-	
-	for ( int i =0; i< (int)mvRaindropVector.size(); ++i )
+	cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+	for (int i = 0; i < (int)mvRaindropVector.size(); ++i)
 	{
 		cRaindrop* pRaindrop = &(mvRaindropVector[i]);
-		pRaindrop->vPos = cVector2f(cMath::RandRectf(-20,800),-50);
-		pRaindrop->vDir = cVector2f(cMath::RandRectf(20,100), 600);
+		pRaindrop->vPos = cVector2f(cMath::RandRectf(-20, screenSize.x), -50);
+		pRaindrop->vDir = cVector2f(cMath::RandRectf(20,100), screenSize.y);
 		pRaindrop->vDir.Normalise();
 		pRaindrop->fColor = 1;
 		pRaindrop->fLength = cMath::RandRectf(10,40);
@@ -182,7 +182,6 @@ void cPreMenu::Reset()
 
 	mpWindSound = NULL;
 	mpRainSound = NULL;
-	
 }
 
 //-----------------------------------------------------------------------
@@ -190,18 +189,19 @@ void cPreMenu::Reset()
 void cPreMenu::OnPostSceneDraw()
 {
 	mpInit->mpGraphicsHelper->ClearScreen(cColor(0,0));
-	
-	if(mlState == 1 || mlState ==2)
+
+	cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+	if (mlState == 1 || mlState == 2)
 	{
-		mpInit->mpGraphicsHelper->DrawTexture(mvTextures[mlCurrentLogo],cVector3f(0,0,-10),cVector3f(800,600,0),
+		mpInit->mpGraphicsHelper->DrawTexture(mvTextures[mlCurrentLogo], cVector3f(0, screenSize.y / 2 - (screenSize.x / 4 * 1.5f), -10), cVector2f(screenSize.x, screenSize.x / 4 * 3),
 												cColor(mfAlpha,1));
 	}
 	if (mlState == 4)
 	{
-		mpInit->mpGraphicsHelper->DrawTexture(mpLogoTexture,cVector3f(400,300,-10)-(mvecLogoSize/2),mvecLogoSize, cColor(mfLogoFade,1));
-		mpInit->mpGraphicsHelper->DrawTexture(mpEpTexture,cVector3f(276,440,-10), cVector3f(248,46,0), cColor(mfEpFade,1));
+		mpInit->mpGraphicsHelper->DrawTexture(mpLogoTexture, cVector3f(screenSize.x / 2, screenSize.y / 2, -10) - (mvecLogoSize / 2), mvecLogoSize, cColor(mfLogoFade, 1));
+		mpInit->mpGraphicsHelper->DrawTexture(mpEpTexture, cVector3f(276, screenSize.y / 2 + 140, -10), cVector3f(248, 46, 0), cColor(mfEpFade, 1));
 		if (mbFlash)
-			mpInit->mpGame->GetGraphics()->GetDrawer()->DrawGfxObject( mpFlashGfx, cVector3f(0,0,10), cVector2f(800,600), cColor(1,0.9f));
+			mpInit->mpGame->GetGraphics()->GetDrawer()->DrawGfxObject( mpFlashGfx, cVector3f(0,0,10), screenSize, cColor(1,0.9f));
 	}
 
 	if (mlState == 1 || mlState == 2 || mlState == 4)
@@ -211,7 +211,7 @@ void cPreMenu::OnPostSceneDraw()
 			cRaindrop* pRaindrop = &(mvRaindropVector[i]);
 			if (pRaindrop->fColor >= 0)
 			{
-				mpInit->mpGame->GetGraphics()->GetDrawer()->DrawGfxObject( pRaindrop->mpGfx, cVector3f(pRaindrop->vPos) + cVector3f(0,0,5), cVector2f(20,6*pRaindrop->fLength), cColor(pRaindrop->fColor,1),false,false);//, -0.2f - 1.5f*pRaindrop->fAngle );
+				mpInit->mpGame->GetGraphics()->GetDrawer()->DrawGfxObject(pRaindrop->mpGfx, cVector3f(pRaindrop->vPos) + cVector3f(0, 0, 5), cVector2f(20, 6 * pRaindrop->fLength), cColor(pRaindrop->fColor, 1), false, false);//, -0.2f - 1.5f*pRaindrop->fAngle );
 				//mpInit->mpGame->GetGraphics()->GetLowLevel()->DrawLine2D(pRaindrop->vPos, pRaindrop->vPos+(pRaindrop->vDir*pRaindrop->fLength),0,cColor(pRaindrop->fColor,pRaindrop->fColor));
 			}
 		}
@@ -230,38 +230,38 @@ void cPreMenu::OnDraw()
 	{
 		int lPrevStart=0;
 		int lCharCount =0;
-		for(size_t i=0; i < mvTextRows.size(); ++i)
+		for (size_t i = 0; i < mvTextRows.size(); ++i)
 		{
 			lPrevStart = lCharCount;
 			lCharCount += (int)mvTextRows[i].length();
 			if(lCharCount >= mlCurrentTextChar)
 			{
 				tWString sText = mvTextRows[i].substr(0,mlCurrentTextChar - lPrevStart);
-				mpTextFont->Draw(cVector3f(25,90+19*(float)i,10)+mvecLastTextPos,17+mfLastTextSize,cColor(mfLastTextColor,mfFontColor,mfFontColor,1),//cColor(0.7f,1,0.7f,1),
-									eFontAlign_Left,sText.c_str());
+				mpTextFont->Draw(cVector3f(25, 90 + 19 * (float)i, 10) + mvecLastTextPos, 17 + mfLastTextSize, cColor(mfLastTextColor, mfFontColor, mfFontColor, 1),//cColor(0.7f,1,0.7f,1),
+									eFontAlign_Left, sText.c_str());
 				if (mlState == 5)
 				{
 					// First pair of shadow texts
-					mpTextFont->Draw(cVector3f(25 + mfLastTextSpeed1,90+19*(float)i,0)+mvecLastTextPos,17+(mfLastTextSize),cColor(mfLastTextColor+0.5f,0,0,0.25f),//cColor(0.7f,1,0.7f,1),
-									eFontAlign_Left,sText.c_str());
-					mpTextFont->Draw(cVector3f(25 + 1.5f*mfLastTextSpeed1,90+19*(float)i,0)+mvecLastTextPos,17+(mfLastTextSize),cColor(mfLastTextColor+0.5f,0,0,0.20f),//cColor(0.7f,1,0.7f,1),
-									eFontAlign_Left,sText.c_str());
+					mpTextFont->Draw(cVector3f(25 + mfLastTextSpeed1, 90 + 19 * (float)i, 0) + mvecLastTextPos, 17 + (mfLastTextSize), cColor(mfLastTextColor + 0.5f, 0, 0, 0.25f),//cColor(0.7f,1,0.7f,1),
+									eFontAlign_Left, sText.c_str());
+					mpTextFont->Draw(cVector3f(25 + 1.5f * mfLastTextSpeed1, 90 + 19 * (float)i, 0) + mvecLastTextPos, 17 + (mfLastTextSize), cColor(mfLastTextColor + 0.5f, 0, 0, 0.20f),//cColor(0.7f,1,0.7f,1),
+									eFontAlign_Left, sText.c_str());
 					// Second pair
-					mpTextFont->Draw(cVector3f(25 + 3*mfLastTextSpeed1,90+19*(float)i,0)+mvecLastTextPos,17+(mfLastTextSize),cColor(mfLastTextColor+0.25f,0,0,0.15f),//cColor(0.7f,1,0.7f,1),
-									eFontAlign_Left,sText.c_str());
-					mpTextFont->Draw(cVector3f(25 + 5*mfLastTextSpeed1,90+19*(float)i,0)+mvecLastTextPos,17+(mfLastTextSize),cColor(mfLastTextColor+0.25f,0,0,0.1f),//cColor(0.7f,1,0.7f,1),
-									eFontAlign_Left,sText.c_str());
-					
+					mpTextFont->Draw(cVector3f(25 + 3 * mfLastTextSpeed1, 90 + 19 * (float)i, 0) + mvecLastTextPos, 17 + (mfLastTextSize), cColor(mfLastTextColor + 0.25f, 0, 0, 0.15f),//cColor(0.7f,1,0.7f,1),
+									eFontAlign_Left, sText.c_str());
+					mpTextFont->Draw(cVector3f(25 + 5 * mfLastTextSpeed1, 90 + 19 * (float)i, 0) + mvecLastTextPos, 17 + (mfLastTextSize), cColor(mfLastTextColor + 0.25f, 0, 0, 0.1f),//cColor(0.7f,1,0.7f,1),
+									eFontAlign_Left, sText.c_str());
+
 					//mpTextFont->Draw(cVector3f(25-mfLastTextPos,90+19*(float)i-mfLastTextPos,0),cVector2f(17,17+(mfLastTextSize)),cColor(mfLastTextColor,mfFontColor,mfFontColor,0.25f),//cColor(0.7f,1,0.7f,1),
 					//				eFontAlign_Left,sText.c_str());
 				}
-								
+
 				break;
 			}
 			else
 			{
-				mpTextFont->Draw(cVector3f(25,90+19*(float)i,10),17,cColor(mfFontColor,mfFontColor),//cColor(0.7f,1,0.7f,1),
-								eFontAlign_Left,mvTextRows[i].c_str());
+				mpTextFont->Draw(cVector3f(25, 90 + 19 * (float)i, 10), 17, cColor(mfFontColor, mfFontColor),//cColor(0.7f,1,0.7f,1),
+								eFontAlign_Left, mvTextRows[i].c_str());
 			}
 		}
 	}
@@ -271,8 +271,8 @@ void cPreMenu::OnDraw()
 
 void cPreMenu::Update(float afTimeStep)
 {
-
 	mfStateTimer += afTimeStep;
+	cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 
 	// Update wind sound fading
 	if (mbFadeWindSound)
@@ -358,41 +358,38 @@ void cPreMenu::Update(float afTimeStep)
 	}
 
     // Update raindrops
-	for ( int i = 0; i < (int)mvRaindropVector.size(); ++i )
+	for (int i = 0; i < (int)mvRaindropVector.size(); ++i)
 	{
 		cRaindrop *pRaindrop = &(mvRaindropVector[i]);
-		pRaindrop->vPos += pRaindrop->vDir * (1.75f*pRaindrop->fLength);
-		pRaindrop->vPos.x += cMath::RandRectf(0,0.05f);
+		pRaindrop->vPos += pRaindrop->vDir * (1.75f * pRaindrop->fLength);
+		pRaindrop->vPos.x += cMath::RandRectf(0, 0.05f);
 			
-		if (pRaindrop->vPos.y > 600)
+		if (pRaindrop->vPos.y > screenSize.y)
 		{
-			pRaindrop->vPos = cVector2f(cMath::RandRectf(-60,800),-80);
-			pRaindrop->vDir = cVector2f(cMath::RandRectf(20,100), 600);
+			pRaindrop->vPos = cVector2f(cMath::RandRectf(-60, screenSize.y), -80);
+			pRaindrop->vDir = cVector2f(cMath::RandRectf(20, 100), screenSize.x);
 			pRaindrop->vDir.Normalise();
-			pRaindrop->fLength = cMath::RandRectf(30,70);
-			pRaindrop->fColor = cMath::RandRectf(0.5f,1) * mfRaindropFade;
+			pRaindrop->fLength = cMath::RandRectf(30, 70);
+			pRaindrop->fColor = cMath::RandRectf(0.5f, 1) * mfRaindropFade;
 		}
 	}
 
-
-	
-	
 	//////////////////////////////////
 	// STATE 0 (Premenu Text)
-	if(mlState ==0)
+	if (mlState == 0)
 	{
-		if(mbShowText==false)
+		if (mbShowText == false)
 		{
 			mlState = 1;
 			mfStateTimer = 0;
 			return;
 		}
 		if (mpWindSound == NULL)
-			mpWindSound = mpInit->mpGame->GetSound()->GetSoundHandler()->PlayGui("gui_wind1",true,0);
+			mpWindSound = mpInit->mpGame->GetSound()->GetSoundHandler()->PlayGui("gui_wind1", true, 0);
 		
-		if ( mpWindSound  && !mbPlayingWindSound )
+		if (mpWindSound && !mbPlayingWindSound)
 		{
-			cSoundEntry* pEntry = mpInit->mpGame->GetSound()->GetSoundHandler()->GetEntryFromSound(mpWindSound);
+			cSoundEntry *pEntry = mpInit->mpGame->GetSound()->GetSoundHandler()->GetEntryFromSound(mpWindSound);
 			if (pEntry)
 			{
 				pEntry->mfNormalVolumeFadeDest = 1;
@@ -402,39 +399,39 @@ void cPreMenu::Update(float afTimeStep)
 			mbPlayingWindSound = true;
 		}
 
-		if(mlCurrentTextChar < mlMaxChars)
+		if (mlCurrentTextChar < mlMaxChars)
 		{
 			mfNewCharCount -= afTimeStep;
-			mfClickCount  -=afTimeStep;
+			mfClickCount -= afTimeStep;
 
-			if(mfNewCharCount <=0)
+			if (mfNewCharCount <= 0)
 			{
-				if(mfClickCount <=0)
+				if (mfClickCount <= 0)
 				{
-					mpInit->mpGame->GetSound()->GetSoundHandler()->PlayGui("gui_type",false,1);
-					mfClickCount = (1.0f / 8.0f) + cMath::RandRectf(-0.05f,0.05f);
+					mpInit->mpGame->GetSound()->GetSoundHandler()->PlayGui("gui_type", false, 1);
+					mfClickCount = (1.0f / 8.0f) + cMath::RandRectf(-0.05f, 0.05f);
 				}
 
 				mlCurrentTextChar++;
-				mfNewCharCount =1.0f / 19.0f;
+				mfNewCharCount = 1.0f / 19.0f;
 
-				if(mlCurrentTextChar == mlMaxChars) 
+				if (mlCurrentTextChar == mlMaxChars)
 				{
 					mlState = 3;
 					mfStateTimer = 0;
 				}
 
 				int lCharCount =0;
-				for(size_t i=0; i < mvTextRows.size(); ++i)
+				for (size_t i = 0; i < mvTextRows.size(); ++i)
 				{
 					lCharCount += (int)mvTextRows[i].length();
-					if(lCharCount == mlCurrentTextChar)
+					if (lCharCount == mlCurrentTextChar)
 					{
-						if(i+1 < mvTextRows.size() && mvTextRows[i+1].size()==0){
+						if (i + 1 < mvTextRows.size() && mvTextRows[i + 1].size() == 0) {
 							mfNewCharCount = 1.0f;
 						}
 					}
-					else if(lCharCount > mlCurrentTextChar)
+					else if (lCharCount > mlCurrentTextChar)
 					{
 						break;
 					}
@@ -471,19 +468,18 @@ void cPreMenu::Update(float afTimeStep)
 			}
 			mbPlayingRainSound = true;
 		}
-		
 
 		if (!mbPlayingMusic)
 		{
-			mpInit->mpGame->GetSound()->GetMusicHandler()->Play("music_theme.ogg",1,0,false);
+			mpInit->mpGame->GetSound()->GetMusicHandler()->Play("music_theme.ogg", 1, 0, false);
 			mbPlayingMusic = true;
 		}
 
-		mfAlpha += afTimeStep*mfAlphaAdd;
+		mfAlpha += afTimeStep * mfAlphaAdd;
 
-		if(mfAlphaAdd >0)
+		if (mfAlphaAdd > 0)
 		{
-			if(mfAlpha >1){
+			if (mfAlpha > 1){
 				mfAlpha = 1;
 				mfAlphaAdd = -mfAlphaAdd;
 			}
@@ -492,13 +488,13 @@ void cPreMenu::Update(float afTimeStep)
 		{
 			if(mfAlpha <0)
 			{
-				mfAlpha =0;
+				mfAlpha = 0;
 				mfAlphaAdd = -mfAlphaAdd;
 
 				mlCurrentLogo++;
 				if(mlCurrentLogo >= (int) mvTextures.size())
 				{
-					mlState=4;
+					mlState = 4;
 					mfStateTimer = 0;
 				}
 			}
@@ -506,13 +502,13 @@ void cPreMenu::Update(float afTimeStep)
 	}
 	//////////////////////////////////
 	// STATE 2 (FAST FADE LOGO)
-	else if(mlState ==2)
+	else if (mlState == 2)
 	{
 		mfAlpha -= cMath::Abs(mfAlphaAdd) * afTimeStep;
-		if(mfAlpha<=0)
+		if (mfAlpha <= 0)
 		{
 			mfStateTimer = 0;
-			mlState=1;
+			mlState = 1;
 			mlCurrentLogo++;
 			if (mlCurrentLogo >= (int) mvTextures.size())
 				mlState = 4;
@@ -520,7 +516,7 @@ void cPreMenu::Update(float afTimeStep)
 	}
 	//////////////////////////////////
 	// STATE 3 (Text Pause)
-	else if(mlState ==3)
+	else if (mlState == 3)
 	{
 		if ( mpWindSound && mbPlayingWindSound )
 		{
@@ -548,7 +544,7 @@ void cPreMenu::Update(float afTimeStep)
 	}
 	///////////////////
 	// STATE 5 (Text Vanishing)
-	else if(mlState ==5)
+	else if (mlState == 5)
 	{
 		mlCurrentTextChar = mlMaxChars;
 		
@@ -682,17 +678,16 @@ void cPreMenu::SetActive(bool abX)
 			mpInit->mpGame->GetHaptic()->GetLowLevel()->SetUpdateShapes(false);
 		mpInit->mpButtonHandler->ChangeState(eButtonHandlerState_PreMenu);
 
-		for(size_t i=0; i< mvTexNames.size(); ++i)
+		for (size_t i = 0; i < mvTexNames.size(); ++i)
 		{
-			iTexture *pTex = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D(mvTexNames[i],false);
+			iTexture *pTex = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D(mvTexNames[i], false);
 			if(pTex) mvTextures.push_back(pTex);
 		}
 
-		mpLogoTexture = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D("title_logo.jpg",false);
-		mpEpTexture = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D("title_ep1.jpg",false);
+		mpLogoTexture = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D("title_logo.jpg", false);
+		mpEpTexture = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D("title_ep1.jpg", false);
 
-
-		mfAlpha =0;
+		mfAlpha = 0;
 	}
 	else
 	{
