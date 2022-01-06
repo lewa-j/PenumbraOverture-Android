@@ -294,7 +294,7 @@ bool cPlayerState_InteractMode::OnAddYaw(float afVal)
 	}
 	else
 	{
-		if(mpPlayer->AddCrossHairPos(cVector2f(afVal * 800.0f,0)))
+		if(mpPlayer->AddCrossHairPos(cVector2f(afVal * mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().x,0)))
 		{
 			mpPlayer->GetCamera()->AddYaw( -afVal * mpPlayer->GetLookSpeed());
 			mpPlayer->GetCharacterBody()->SetYaw(mpPlayer->GetCamera()->GetYaw());
@@ -337,7 +337,7 @@ bool cPlayerState_InteractMode::OnAddPitch(float afVal)
 	}
 	else
 	{
-		if(mpPlayer->AddCrossHairPos(cVector2f(0,afVal * 600.0f)))
+		if(mpPlayer->AddCrossHairPos(cVector2f(0,afVal * mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().y)))
 		{
 			mpPlayer->GetCamera()->AddPitch( -afVal * mpPlayer->GetLookSpeed());
 		}
@@ -560,7 +560,7 @@ bool cPlayerState_UseItem::OnAddYaw(float afVal)
 		mpPlayer->GetCamera()->AddYaw( -afVal * 2.0f * mpPlayer->GetLookSpeed());
 		mpPlayer->GetCharacterBody()->SetYaw(mpPlayer->GetCamera()->GetYaw());
 	}
-	else if(mpPlayer->AddCrossHairPos(cVector2f(afVal * 800.0f,0)))
+	else if(mpPlayer->AddCrossHairPos(cVector2f(afVal * mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().x,0)))
 	{
 		mpPlayer->GetCamera()->AddYaw( -afVal * mpPlayer->GetLookSpeed());
 		mpPlayer->GetCharacterBody()->SetYaw(mpPlayer->GetCamera()->GetYaw());
@@ -578,7 +578,7 @@ bool cPlayerState_UseItem::OnAddPitch(float afVal)
 		float fInvert = mpInit->mpButtonHandler->GetInvertMouseY() ? -1.0f : 1.0f;
 		mpPlayer->GetCamera()->AddPitch( -afVal *2.0f*fInvert * mpPlayer->GetLookSpeed());
 	}
-	else if(mpPlayer->AddCrossHairPos(cVector2f(0,afVal * 600.0f)))
+	else if(mpPlayer->AddCrossHairPos(cVector2f(0,afVal * mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().y)))
 	{
 		mpPlayer->GetCamera()->AddPitch( -afVal * mpPlayer->GetLookSpeed());
 	}

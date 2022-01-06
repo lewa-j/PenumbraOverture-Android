@@ -147,23 +147,23 @@ void cIntroImage::FadeAlphaTo(float afAlpha,float afTime)
 void cIntroImage::Reset()
 {
 	mbActive = false;
-	
+
 	mfBrightness = 1;
 	mfBrightnessStep = 0;
-	mfFinalBrightness =1;
+	mfFinalBrightness = 1;
 
 	mfAlpha = 1;
 	mfAlphaStep = 0;
 	mfFinalAlpha = 1;
 
-	mvCameraPosition =0;
-	mvFinalPos =0;
-	mvPosStep =0;
-	mfPosCount =0;
+	mvCameraPosition = 0;
+	mvFinalPos = 0;
+	mvPosStep = 0;
+	mfPosCount = 0;
 
 	mvPosDistMul = 1;
 
-	mlstPrevPos .clear();
+	mlstPrevPos.clear();
 }
 
 //-----------------------------------------------------------------------
@@ -202,7 +202,6 @@ void cIntroImage::Update(float afTimeStep)
 		}
 	}
 
-	
 	/////////////////////////////////
 	//Brightness
 	if(mfBrightness != mfFinalBrightness)
@@ -217,8 +216,7 @@ void cIntroImage::Update(float afTimeStep)
 			mfBrightness = mfFinalBrightness;
 		}
 	}
-	
-	
+
 	/////////////////////////////////
 	//Alpha
 	if(mfAlpha != mfFinalAlpha)
@@ -241,16 +239,16 @@ void cIntroImage::Update(float afTimeStep)
 void cIntroImage::OnDraw()
 {
 	cVector3f vCamDrawPos;
-	
-	if(mlstPrevPos.empty())
+
+	if (mlstPrevPos.empty())
 	{
 		vCamDrawPos = mvCameraPosition;
 	}
 	else
 	{
-		vCamDrawPos = cVector3f(0,0,0);
+		vCamDrawPos = cVector3f(0, 0, 0);
 		tVector3fListIt it = mlstPrevPos.begin();
-		for(; it != mlstPrevPos.end(); ++it)
+		for (; it != mlstPrevPos.end(); ++it)
 		{
 			vCamDrawPos += *it;
 		}
@@ -260,54 +258,54 @@ void cIntroImage::OnDraw()
 
 	/////////////////////////////////
 	// Set up position variables
-	cVector3f vPos =	cVector3f(-vCamDrawPos.x, -vCamDrawPos.y,0); 
-						
+	const cVector2f screenSize = mpLowGfx->GetVirtualSize();
+	cVector3f vPos = cVector3f(-vCamDrawPos.x, -vCamDrawPos.y, 0);
+
 	float fAlpha = mfAlpha;
-	float fBrightness = cMath::Min(1.0f,mfBrightness);
+	float fBrightness = cMath::Min(1.0f, mfBrightness);
 	cVector2f vSize(1024, 784);
-	vSize  = vSize * (1/vCamDrawPos.z);
-	vPos = vPos * (1/vCamDrawPos.z) + cVector3f(400, 300,0);;
-	
+	vSize = vSize * (1 / vCamDrawPos.z);
+	vPos = vPos * (1 / vCamDrawPos.z) + cVector3f(screenSize.x / 2, screenSize.y / 2, 0);
+
 	///////////////////////////
 	//Set up vertexes
-	mvVtxVec[0] = cVertex(vPos + cVector3f(0,0,0),
-								cVector2f(0,0),cColor(fBrightness,fAlpha) );
-	
-	mvVtxVec[1] = cVertex(vPos + cVector3f(vSize.x,0,40),
-								cVector2f(1,0),cColor(fBrightness,fAlpha));
-	
-	mvVtxVec[2] = cVertex(vPos + cVector3f(vSize.x,vSize.y,40),
-								cVector2f(1,1),cColor(fBrightness,fAlpha));
-	
-	mvVtxVec[3] = cVertex(vPos +  cVector3f(0,vSize.y,40),
-									cVector2f(0,1),cColor(fBrightness,fAlpha));
+	mvVtxVec[0] = cVertex(vPos + cVector3f(0, 0, 0),
+		cVector2f(0, 0), cColor(fBrightness, fAlpha));
+
+	mvVtxVec[1] = cVertex(vPos + cVector3f(vSize.x, 0, 40),
+		cVector2f(1, 0), cColor(fBrightness, fAlpha));
+
+	mvVtxVec[2] = cVertex(vPos + cVector3f(vSize.x, vSize.y, 40),
+		cVector2f(1, 1), cColor(fBrightness, fAlpha));
+
+	mvVtxVec[3] = cVertex(vPos + cVector3f(0, vSize.y, 40),
+		cVector2f(0, 1), cColor(fBrightness, fAlpha));
 
 	//////////////////////////
 	///Draw
 	mpLowGfx->SetTexture(0, mpTexture);
 	mpLowGfx->SetBlendActive(true);
-	mpLowGfx->SetBlendFunc(eBlendFunc::SrcAlpha,eBlendFunc::OneMinusSrcAlpha);
+	mpLowGfx->SetBlendFunc(eBlendFunc::SrcAlpha, eBlendFunc::OneMinusSrcAlpha);
 
 	mpLowGfx->DrawQuad(mvVtxVec);
 
-	if(mfBrightness>1)
+	if (mfBrightness > 1)
 	{
-		float fWhite = mfBrightness -1;
+		float fWhite = mfBrightness - 1;
 
-		mvVtxVec[0] = cVertex(cVector3f(0,0,0),cVector2f(0,0),cColor(fWhite,1) );
-		mvVtxVec[1] = cVertex(cVector3f(800,0,40),cVector2f(1,0),cColor(fWhite,1));
-		mvVtxVec[2] = cVertex(cVector3f(800,600,40),	cVector2f(1,1),cColor(fWhite,1));
-		mvVtxVec[3] = cVertex(cVector3f(0,600,40),cVector2f(0,1),cColor(fWhite,1));
-		
+		mvVtxVec[0] = cVertex(cVector3f(0, 0, 0), cVector2f(0, 0), cColor(fWhite, 1));
+		mvVtxVec[1] = cVertex(cVector3f(screenSize.x, 0, 40), cVector2f(1, 0), cColor(fWhite, 1));
+		mvVtxVec[2] = cVertex(cVector3f(screenSize.x, screenSize.y, 40), cVector2f(1, 1), cColor(fWhite, 1));
+		mvVtxVec[3] = cVertex(cVector3f(0, screenSize.y, 40), cVector2f(0, 1), cColor(fWhite, 1));
+
 		mpLowGfx->SetTexture(0, NULL);
 
-		mpLowGfx->SetBlendFunc(eBlendFunc::One,eBlendFunc::One);
+		mpLowGfx->SetBlendFunc(eBlendFunc::One, eBlendFunc::One);
 
 		mpLowGfx->DrawQuad(mvVtxVec);
 
 	}
 	mpLowGfx->SetBlendActive(false);
-
 }
 
 //-----------------------------------------------------------------------
@@ -462,30 +460,31 @@ void cIntroStory::Reset()
 
 void cIntroStory::OnDraw()
 {
-	cVector3f vPos = cVector3f(15,526,10);
+	const cVector2f screenSize = mpLowGfx->GetVirtualSize();
+	cVector3f vPos = cVector3f(15, screenSize.y - 74, 10);
 	cVector2f vSize = 16;
 
-	if(msCentreText != _W(""))
+	if (msCentreText != _W(""))
 	{
 		float fAlpha = mvImages[5].mfBrightness;
-		mpFont->Draw(	cVector3f(400,300,2),18,cColor(1,1,1,fAlpha),
-						eFontAlign_Center,msCentreText.c_str());
-		mpFont->Draw(	cVector3f(400+1,300+1,1),18,cColor(0,fAlpha),
-						eFontAlign_Center,msCentreText.c_str());
-		mpFont->Draw(	cVector3f(400-1,300-1,1),18,cColor(0,fAlpha),
-						eFontAlign_Center,msCentreText.c_str());
-		mpFont->Draw(	cVector3f(400-1,300+1,1),18,cColor(0,fAlpha),
-			eFontAlign_Center,msCentreText.c_str());
-		mpFont->Draw(	cVector3f(400+1,300-1,1),18,cColor(0,fAlpha),
-			eFontAlign_Center,msCentreText.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2, screenSize.y / 2, 2), 18, cColor(1, 1, 1, fAlpha),
+			eFontAlign_Center, msCentreText.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2 + 1, screenSize.y / 2 + 1, 1), 18, cColor(0, fAlpha),
+			eFontAlign_Center, msCentreText.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2 - 1, screenSize.y / 2 - 1, 1), 18, cColor(0, fAlpha),
+			eFontAlign_Center, msCentreText.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2 - 1, screenSize.y / 2 + 1, 1), 18, cColor(0, fAlpha),
+			eFontAlign_Center, msCentreText.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2 + 1, screenSize.y / 2 - 1, 1), 18, cColor(0, fAlpha),
+			eFontAlign_Center, msCentreText.c_str());
 	}
-	
+
 	//mpFont->DrawWordWrap(vPos + cVector3f(3,3,-1),760,21,vSize,cColor(1,0),eFontAlign_Left,msMessage);
 	//mpFont->DrawWordWrap(vPos + cVector3f(-2,-2,-1),760,21,vSize,cColor(1,0),eFontAlign_Left,msMessage);
 
-	if(mpInit->mbSubtitles)
+	if (mpInit->mbSubtitles)
 	{
-		mpFont->DrawWordWrap(vPos, 760,18,vSize,cColor(1,1,1,1),eFontAlign_Left,msMessage);
+		mpFont->DrawWordWrap(vPos, 760, 18, vSize, cColor(1, 1, 1, 1), eFontAlign_Left, msMessage);
 	}
 }
 
@@ -493,21 +492,23 @@ void cIntroStory::OnDraw()
 
 void cIntroStory::OnPostSceneDraw()
 {
-	mpLowGfx->SetClearColor(cColor(0,0,0,0));
+	const cVector2f screenSize = mpLowGfx->GetVirtualSize();
+
+	mpLowGfx->SetClearColor(cColor(0, 0, 0, 0));
 	mpLowGfx->ClearScreen();
 
 	mpLowGfx->SetDepthTestActive(false);
 	mpLowGfx->PushMatrix(eMatrix::ModelView);
 	mpLowGfx->SetIdentityMatrix(eMatrix::ModelView);
-	mpLowGfx->SetOrthoProjection(mpLowGfx->GetVirtualSize(),-1000,1000);
-	
-	for(int i=0; i< INTRO_IMAGE_NUM; ++i)
+	mpLowGfx->SetOrthoProjection(screenSize, -1000, 1000);
+
+	for (int i = 0; i < INTRO_IMAGE_NUM; ++i)
 	{
-		if(mvImages[i].mbActive) mvImages[i].OnDraw();
+		if (mvImages[i].mbActive) mvImages[i].OnDraw();
 	}
 
-	mpInit->mpGraphicsHelper->DrawTexture(mpBlackTexture,cVector3f(0,0,140),cVector2f(800,75),cColor(1,1));
-	mpInit->mpGraphicsHelper->DrawTexture(mpBlackTexture,cVector3f(0,525,140),cVector2f(800,75),cColor(1,1));
+	mpInit->mpGraphicsHelper->DrawTexture(mpBlackTexture, cVector3f(0, 0, 140), cVector2f(screenSize.x, 75), cColor(1, 1));
+	mpInit->mpGraphicsHelper->DrawTexture(mpBlackTexture, cVector3f(0, screenSize.y - 75, 140), cVector2f(screenSize.x, 75), cColor(1, 1));
 
 	mpLowGfx->PopMatrix(eMatrix::ModelView);
 }

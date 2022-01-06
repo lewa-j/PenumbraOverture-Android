@@ -71,23 +71,22 @@ cInventory::cInventory(cInit *apInit)  : iUpdateable("Inventory")
 	cInventorySlot *pSlot = NULL;
 	int lCount=0;
     
-	cVector2f vSlotBegin(400 - 77*2.5f, 15 + 69 + 5);
-	for(float y=0; y<4; ++y)
-	for(float x=0; x<6; ++x)
-	{
-		pSlot = hplNew( cInventorySlot, (mpInit,vSlotBegin + cVector2f(x * 77,y*69),false,lCount++) );
-		AddWidget(pSlot);
-		mlstSlots.push_back(pSlot);
-	}
+	cVector2f vSlotBegin(400 - 77 * 2.5f, 25 + 69 + 5);
+	for (float y = 0; y < 4; ++y)
+		for (float x = 0; x < 6; ++x)
+		{
+			pSlot = hplNew(cInventorySlot, (mpInit, vSlotBegin + cVector2f(x * 77, y * 69), false, lCount++));
+			AddWidget(pSlot);
+			mlstSlots.push_back(pSlot);
+		}
 
 	///////////////////////////////////
 	//Init equip slots
 	int lEquipSlot = 0;
-	//cVector2f vEquipSlotBegin = cVector2f(400 - 77*5,10);
-	cVector2f vEquipSlotBegin = cVector2f(400 - 77*4.5f,15);
-	for(float x=0; x<9; ++x)
+	cVector2f vEquipSlotBegin = cVector2f(400 - 77 * 4.5f, 25);
+	for (float x = 0; x < 9; ++x)
 	{
-		pSlot = hplNew( cInventorySlot, (mpInit,vEquipSlotBegin + cVector2f(x*77,0),true,lCount++) );
+		pSlot = hplNew(cInventorySlot, (mpInit, vEquipSlotBegin + cVector2f(x * 77, 0), true, lCount++));
 		AddWidget(pSlot);
 		mlstSlots.push_back(pSlot);
 		pSlot->SetEquipIndex(lEquipSlot++);
@@ -96,15 +95,10 @@ cInventory::cInventory(cInit *apInit)  : iUpdateable("Inventory")
 
 	///////////////////////////////////
 	//Init other widgests
-	cInventoryBattery *pBattery = hplNew( cInventoryBattery,(mpInit,
-														cRect2f(400 - 77*3.5f, 15 + 69 + 5,77,135),
-														NULL,30.0f) );
+	cInventoryBattery *pBattery = hplNew(cInventoryBattery, (mpInit, cRect2f(400 - 77 * 3.5f, 25 + 69 + 5, 77, 135), NULL, 30.0f));
 	AddWidget(pBattery);
 
-	cInventoryHealth *pHealth = hplNew( cInventoryHealth, (mpInit,
-														cRect2f(400 - 77*3.5f, 15 + 69*3 + 5,
-																77,135),
-														NULL,30.0f) );
+	cInventoryHealth *pHealth = hplNew(cInventoryHealth, (mpInit, cRect2f(400 - 77 * 3.5f, 25 + 69 * 3 + 5, 77, 135), NULL, 30.0f));
 	AddWidget(pHealth);
 
 	///////////////////////////////////
@@ -134,9 +128,10 @@ cInventory::~cInventory(void)
 
 	ClearCallbacks();
 	
-	for(size_t i=0; i<mvItemTypes.size(); ++i)
+	for (size_t i = 0; i < mvItemTypes.size(); ++i)
 	{
-		if(mvItemTypes[i])  hplDelete(mvItemTypes[i]);
+		if (mvItemTypes[i])
+			hplDelete(mvItemTypes[i]);
 	}
 
 	STLDeleteAll(mlstWidgets);
@@ -202,22 +197,18 @@ void cInventorySlot::OnDraw()
 		cVector3f vPos(mRect.x + 4,	mRect.y + 4 ,5);
 		cVector2l vSize = mpItem->GetGfxObject()->GetMaterial()->GetImage(eMaterialTexture_Diffuse)->GetSize();
 		
-		mpDrawer->DrawGfxObject(mpItem->GetGfxObject(), vPos,
-								cVector2f((float)vSize.x, (float)vSize.y),
-								cColor(1, mpInit->mpInventory->GetAlpha()));
+		mpDrawer->DrawGfxObject(mpItem->GetGfxObject(), vPos, cVector2f((float)vSize.x, (float)vSize.y), cColor(1, mpInit->mpInventory->GetAlpha()));
 		
 		cGameItemType *pType = mpInit->mpInventory->GetItemType(mpItem->GetItemType());
 
 		if(pType && pType->GetString(mpItem)!=_W(""))
 		{
 			tWString sString = pType->GetString(mpItem);
-			mpFont->Draw(vPos + cVector3f(0,0,1),12,cColor(1,mpInit->mpInventory->GetAlpha()),eFontAlign_Left,
-						sString.c_str());
+			mpFont->Draw(vPos + cVector3f(0, 0, 1), 12, cColor(1, mpInit->mpInventory->GetAlpha()), eFontAlign_Left, sString.c_str());;
 		}
 		else if(mpItem->HasCount())
 		{
-			mpFont->Draw(vPos + cVector3f(0,0,1),12,cColor(1,mpInit->mpInventory->GetAlpha()),eFontAlign_Left,
-						_W("%d"),mpItem->GetCount());
+			mpFont->Draw(vPos + cVector3f(0, 0, 1), 12, cColor(1, mpInit->mpInventory->GetAlpha()), eFontAlign_Left, _W("%d"), mpItem->GetCount());;
 		}
 	}
 	
@@ -229,8 +220,7 @@ void cInventorySlot::OnDraw()
 			mpGfxBack = mpDrawer->CreateGfxObject("inventory_slot_equip"+cString::ToString(mlEquipIndex+1)+".bmp","diffalpha2d");
 		}
 
-		mpDrawer->DrawGfxObject(mpGfxBack,cVector3f(mRect.x,mRect.y,1),cVector2f(77,66),
-								cColor(1,mpInit->mpInventory->GetAlpha()*0.23f));
+		mpDrawer->DrawGfxObject(mpGfxBack, cVector3f(mRect.x, mRect.y, 1), cVector2f(77, 66), cColor(1, mpInit->mpInventory->GetAlpha() * 0.23f));
 		/*cVector3f vPos(mRect.x + 2,mRect.y + 3 ,11);
 		tString sString = cString::ToString(mlEquipIndex+1);
 		
@@ -321,8 +311,7 @@ void cInventorySlot::OnMouseDown(eMButton aButton)
 			mpInit->mpInventory->SetCurrentSlot(this);
 			mpItem = NULL;
 
-			cVector2f vOffset = cVector2f(mRect.x + 4,	mRect.y + 4) - 
-								mpInit->mpInventory->GetMousePos();
+			cVector2f vOffset = cVector2f(mRect.x + 4, mRect.y + 4) - mpInit->mpInventory->GetMousePos();
             mpInit->mpInventory->SetCurrentItemOffset(vOffset);			
 		}
 	}
@@ -405,10 +394,10 @@ void cInventorySlot::OnDoubleClick(eMButton aButton)
 			//Check there is a callback for the item with object = ""
 			if(mpInit->mpInventory->CheckUseCallback(pItem->GetName(), ""))
 			{
-				mpInit->mpInventory->SetActive(false);				
+				mpInit->mpInventory->SetActive(false);
 			}
 
-            //Use the action of the item
+			//Use the action of the item
 			else if(pItemType->OnAction(pItem, 0)==false)
 			{
 				mpInit->mpInventory->SetActive(false);
@@ -474,8 +463,8 @@ bool cInventoryItem::Init(cGameItem *apGameItem)
 
 	if(apGameItem->GetImageFile()!="")
 	{
-		mpGfxObject = mpDrawer->CreateGfxObject(apGameItem->GetImageFile(),"diffalpha2d");
-		mpGfxObjectAdditive = mpDrawer->CreateGfxObject(apGameItem->GetImageFile(),"diffadditive2d");
+		mpGfxObject = mpDrawer->CreateGfxObject(apGameItem->GetImageFile(), "diffalpha2d");
+		mpGfxObjectAdditive = mpDrawer->CreateGfxObject(apGameItem->GetImageFile(), "diffadditive2d");
 	}
 	else
 		mpGfxObject = NULL;
@@ -503,7 +492,7 @@ bool cInventoryItem::Init(cGameItem *apGameItem)
 
 bool cInventoryItem::InitFromFile(const tString &asFile)
 {
-	tString sEntityFile = cString::SetFileExt(asFile,"ent");
+	tString sEntityFile = cString::SetFileExt(asFile, "ent");
 	tString sPath = mpInit->mpGame->GetResources()->GetFileSearcher()->GetFilePath(sEntityFile);
 
 	if(sPath!="")
@@ -608,20 +597,17 @@ cInventoryBattery::~cInventoryBattery()
 
 void cInventoryBattery::OnDraw()
 {
-	cVector3f vPos = cVector3f(mRect.x, mRect.y, mfZ+1);
+	cVector3f vPos = cVector3f(mRect.x, mRect.y, mfZ + 1);
 	cVector2f vSize(mRect.w, mRect.h);
 	float fAlpha = mpInit->mpInventory->GetAlpha();
-	float fPercent = mpInit->mpPlayer->GetPower()/100.0f;
+	float fPercent = mpInit->mpPlayer->GetPower() / 100.0f;
 
 	mpDrawer->DrawGfxObject(mpGfxBatteryMeter,vPos,vSize,cColor(1,fAlpha));
 	
-	mpDrawer->DrawGfxObject(mpGfxBatteryMeterBar,cVector3f(vPos.x+26,vPos.y+16,4),
-							cVector2f(21,102),
-							cColor(0,0,0,fAlpha));
-	mpDrawer->DrawGfxObject(mpGfxBatteryMeterBar,
-							cVector3f(vPos.x+26,vPos.y+16 + (102*(1-fPercent)),5),
-							cVector2f(21, 102*fPercent),
-							cColor(	1.0f-fPercent,fPercent,	0,fAlpha));
+	mpDrawer->DrawGfxObject(mpGfxBatteryMeterBar, cVector3f(vPos.x + 26, vPos.y + 16, 4),
+		cVector2f(21, 102), cColor(0, 0, 0, fAlpha));
+	mpDrawer->DrawGfxObject(mpGfxBatteryMeterBar, cVector3f(vPos.x + 26, vPos.y + 16 + (102 * (1 - fPercent)), 5),
+		cVector2f(21, 102 * fPercent), cColor(1.0f - fPercent, fPercent, 0, fAlpha));
 	
 	//mpFont->Draw(cVector3f(vBatteryPos.x+50, vBatteryPos.y+6,10),20,cColor(0.91f,1,0.91f,mfAlpha),eFontAlign_Left,
 	//_W("%.0f%%"),mpInit->mpPlayer->GetPower());
@@ -650,9 +636,8 @@ void cInventoryBattery::OnUpdate(float afTimeStep)
 
 //-----------------------------------------------------------------------
 
-cInventoryHealth::cInventoryHealth(cInit *apInit, const cRect2f &aRect, cGfxObject* apGfxObject, 
-									 float afZ)
-									 : iInventoryWidget(apInit,aRect,apGfxObject,afZ)
+cInventoryHealth::cInventoryHealth(cInit *apInit, const cRect2f &aRect, cGfxObject* apGfxObject, float afZ)
+	: iInventoryWidget(apInit,aRect,apGfxObject,afZ)
 {
 	mpGfxObject = mpDrawer->CreateGfxObject("inventory_slot_double.bmp","diffalpha2d");
 	mpGfxFine = mpDrawer->CreateGfxObject("inventory_health_fine.bmp","diffalpha2d");
@@ -669,36 +654,39 @@ cInventoryHealth::~cInventoryHealth()
 
 void cInventoryHealth::OnDraw()
 {
-	cVector3f vPos = cVector3f(mRect.x, mRect.y, mfZ+1);
+	cVector3f vPos = cVector3f(mRect.x, mRect.y, mfZ + 1);
 	cVector2f vSize(mRect.w, mRect.h);
 	float fAlpha = mpInit->mpInventory->GetAlpha();
-	float fPercent = mpInit->mpPlayer->GetHealth()/100.0f;
+	float fPercent = mpInit->mpPlayer->GetHealth() / 100.0f;
 	
 	cGfxObject *pGfxMan;
-	if(fPercent > 0.75f){		pGfxMan = mpGfxFine;
+	if (fPercent > 0.75f) {
+		pGfxMan = mpGfxFine;
 	}
-	else if(fPercent > 0.3f){	pGfxMan = mpGfxCaution;
+	else if (fPercent > 0.3f) {
+		pGfxMan = mpGfxCaution;
 	}
-	else{						pGfxMan = mpGfxDanger;
+	else {
+		pGfxMan = mpGfxDanger;
 	}
 
-	mpDrawer->DrawGfxObject(pGfxMan,cVector3f(vPos.x+6,vPos.y+6,2),cVector2f(mRect.w-12,mRect.h-12),
-							cColor(	1.0f-fPercent,fPercent,	0,fAlpha));
+	mpDrawer->DrawGfxObject(pGfxMan, cVector3f(vPos.x + 6, vPos.y + 6, 2),
+		cVector2f(mRect.w - 12, mRect.h - 12), cColor(1.0f - fPercent, fPercent, 0, fAlpha));;
 }
 
 void cInventoryHealth::OnMouseOver()
 {
-	float fPercent = mpInit->mpPlayer->GetHealth()/100.0f;
+	float fPercent = mpInit->mpPlayer->GetHealth() / 100.0f;
 	tWString wsText;
 
 	if(fPercent > 0.75f){
-		wsText = kTranslate("Inventory","HealthFine");
+		wsText = kTranslate("Inventory", "HealthFine");
 	}
 	else if(fPercent > 0.3f){
-		wsText = kTranslate("Inventory","HealthCaution");
+		wsText = kTranslate("Inventory", "HealthCaution");
 	}
 	else{
-		wsText = kTranslate("Inventory","HealthDanger");
+		wsText = kTranslate("Inventory", "HealthDanger");
 	}
 
 	mpInit->mpInventory->SetItemName(kTranslate("Inventory", "Health"));
@@ -738,12 +726,11 @@ cInventoryContext::cInventoryContext(cInit *apInit)
 	mpGfxTop = mpDrawer->CreateGfxObject("inventory_context_top.bmp","diffalpha2d");
 	mpGfxBottom = mpDrawer->CreateGfxObject("inventory_context_bottom.bmp","diffalpha2d");
 
-	
 	mvPos.z = 40.0f;
 
 	mpFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("verdana.fnt");
 
-	mfRowStart =0;
+	mfRowStart = 0;
 	mfRowSize = 15;
 	mfColLength = 100;
 
@@ -781,7 +768,7 @@ void cInventoryContext::SetActive(bool abX)
 
 void cInventoryContext::Draw()
 {
-	if(mfAlpha <= 0.0f || mpActionVec==NULL) return;
+	if (mfAlpha <= 0.0f || mpActionVec == NULL) return;
 
 	float fTotalAlpha = mfAlpha * mpInit->mpInventory->GetAlpha();
 
@@ -808,9 +795,9 @@ void cInventoryContext::Draw()
 							cVector2f(mvSize.x,vCornerSize.y), cColor(1,fTotalAlpha));
 
 
-	for(int i=0; i< (int)mpActionVec->size(); i++)
+	for (int i = 0; i < (int)mpActionVec->size(); i++)
 	{
-		cColor Col = mlSelectedRow == i? cColor(0.2f,1.0f,0.2f,mfAlpha) : cColor(0.65f,0.65f,0.65f,fTotalAlpha);
+		cColor Col = mlSelectedRow == i ? cColor(0.2f, 1.0f, 0.2f, mfAlpha) : cColor(0.65f, 0.65f, 0.65f, fTotalAlpha);
 		
 		//mpFont->Draw(mvPos + cVector3f(2.0f,(float)i*mfRowSize,1),14,Col,
 		//			eFontAlign_Left,(*mpActionVec)[i].c_str());
@@ -970,12 +957,12 @@ void cInventory::Update(float afTimeStep)
 	if(mbMessageActive)
 	{
 		mfMessageAlpha += 2.7f *afTimeStep;
-		if(mfMessageAlpha>1) mfMessageAlpha =1;
+		if (mfMessageAlpha > 1) mfMessageAlpha = 1;
 	}
 	else
 	{
 		mfMessageAlpha -= 3.1f *afTimeStep;
-		if(mfMessageAlpha<0) mfMessageAlpha =0;
+		if (mfMessageAlpha < 0) mfMessageAlpha = 0;
 	}
 
 	/////////////////////
@@ -1022,13 +1009,13 @@ void cInventory::Reset()
 	//Clear all the slots
 	//Normal
 	tInventorySlotListIt it = mlstSlots.begin();
-	for(; it != mlstSlots.end(); ++it)
+	for (; it != mlstSlots.end(); ++it)
 	{
 		cInventorySlot *pSlot = *it;
 		pSlot->SetItem(NULL);
 	}
 	//Equip
-	for(size_t i=0; i < mvEquipSlots.size(); ++i)
+	for (size_t i = 0; i < mvEquipSlots.size(); ++i)
 	{
 		mvEquipSlots[i]->SetItem(NULL);
 	}
@@ -1040,12 +1027,14 @@ void cInventory::Reset()
 
 void cInventory::OnDraw()
 {
-	if(mfAlpha<=0.0f) return;
+	if (mfAlpha <= 0.0f) return;
+
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 
 	///////////////////////////////
 	//Draw background
-	mpDrawer->DrawGfxObject(mpGfxBackground,cVector3f(0,0,0),cVector2f(800,600),cColor(1,mfAlpha));
-	
+	mpDrawer->DrawGfxObject(mpGfxBackground, cVector3f(0, 0, 0), screenSize, cColor(1, mfAlpha));
+
 	//Draw backpack and hands
 	//mpDrawer->DrawGfxObject(mpBagpack,cVector3f(0,600 - (160*sqrt(mfAlpha)),-1),cVector2f(800,160),cColor(1,mfAlpha));
 
@@ -1114,31 +1103,31 @@ void cInventory::OnDraw()
 	{
 		float fMessAlpha = mfAlpha*mfMessageAlpha;
 
-		cVector3f vMessPos = cVector3f(40,275,110);
+		cVector3f vMessPos = cVector3f(40, screenSize.y / 2 - 25, 110);
 
-		mpDrawer->DrawGfxObject(mpMessageBackground,cVector3f(0,vMessPos.y - 8,vMessPos.z-2),
-								cVector2f(800,17*4+8*2),cColor(1,1,1,fMessAlpha *0.92f));
+		mpDrawer->DrawGfxObject(mpMessageBackground, cVector3f(0, vMessPos.y - 8, vMessPos.z - 2),
+			cVector2f(screenSize.x, 17 * 4 + 8 * 2), cColor(1, 1, 1, fMessAlpha * 0.92f));
 		
-		mpFont->DrawWordWrap(vMessPos + cVector3f(0,0,0),720,16,17,cColor(1,1,1,fMessAlpha),eFontAlign_Left,
-								msMessage.c_str());
-		mpFont->DrawWordWrap(vMessPos + cVector3f(0,1,-1),720,16,17,cColor(0,0,0,fMessAlpha),eFontAlign_Left,
-								msMessage.c_str());
+		mpFont->DrawWordWrap(vMessPos + cVector3f(0, 0, 0), 720, 16, 17, cColor(1, 1, 1, fMessAlpha), eFontAlign_Left,
+			msMessage.c_str());
+		mpFont->DrawWordWrap(vMessPos + cVector3f(0, 1, -1), 720, 16, 17, cColor(0, 0, 0, fMessAlpha), eFontAlign_Left,
+			msMessage.c_str());
 	}
-	
+
 	//////////////////////////
 	//Draw text
-	if(mpInit->mpRadioHandler->IsActive()==false || mpInit->mbSubtitles==false)
+	if (mpInit->mpRadioHandler->IsActive() == false || mpInit->mbSubtitles == false)
 	{
 		float fTextAlpha = mfAlpha*mfTextAlpha * (1- mfMessageAlpha);
-		mpFont->Draw(cVector3f(400, 460,10),19,cColor(1,1,1,fTextAlpha),eFontAlign_Center,
-							_W("%ls"),msItemName.c_str());
-		mpFont->Draw(cVector3f(400+1, 460+1,9),19,cColor(0,0,0,fTextAlpha),eFontAlign_Center,
-							_W("%ls"),msItemName.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2, screenSize.y / 2 + 160, 10), 19, cColor(1, 1, 1, fTextAlpha), eFontAlign_Center,
+			_W("%ls"), msItemName.c_str());
+		mpFont->Draw(cVector3f(screenSize.x / 2 + 1, screenSize.y / 2 + 160 + 1, 9), 19, cColor(0, 0, 0, fTextAlpha), eFontAlign_Center,
+			_W("%ls"), msItemName.c_str());
 
-		mpFont->DrawWordWrap(cVector3f(80,480,10),640,16,17,cColor(1,1,1,fTextAlpha),eFontAlign_Left,
-							msItemDesc.c_str());
-		mpFont->DrawWordWrap(cVector3f(80+1,480+1,9),640,16,17,cColor(0,0,0,fTextAlpha),eFontAlign_Left,
-							msItemDesc.c_str());
+		mpFont->DrawWordWrap(cVector3f(80, screenSize.y / 2 + 180, 10), 640, 16, 17, cColor(1, 1, 1, fTextAlpha), eFontAlign_Left,
+			msItemDesc.c_str());
+		mpFont->DrawWordWrap(cVector3f(80 + 1, screenSize.y / 2 + 180 + 1, 9), 640, 16, 17, cColor(0, 0, 0, fTextAlpha), eFontAlign_Left,
+			msItemDesc.c_str());
 	}
 }
 
@@ -1156,8 +1145,8 @@ void cInventory::SetActive(bool abX)
 
 		mLastCrossHairState = mpInit->mpPlayer->GetCrossHairState();
 		
-		mvMousePos = cVector2f(400,300);
-		mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
+		mpInit->mpPlayer->ResetCrossHairPos();
+		mvMousePos = mpInit->mpPlayer->GetCrossHairPos();
 		mpInit->mpPlayer->SetCrossHairState(eCrossHairState_Pointer);
 	}
 	else
@@ -1189,8 +1178,8 @@ void cInventory::OnInventoryDown()
 	}
 
 	SetActive(false);
-	mpInit->mpPlayer->SetCrossHairPos(cVector2f(400,300));
-	mvMousePos = cVector2f(400,300);
+	mpInit->mpPlayer->ResetCrossHairPos();
+	mvMousePos = mpInit->mpPlayer->GetCrossHairPos();
 }
 
 //-----------------------------------------------------------------------
@@ -1485,14 +1474,16 @@ void cInventory::OnDoubleClick(eMButton aButton)
 
 void cInventory::AddMousePos(const cVector2f &avRel)
 {
-	if(mbMessageActive) return;
+	if (mbMessageActive) return;
 
 	mvMousePos += avRel;
-	
-	if(mvMousePos.x < 0) mvMousePos.x =0;
-	if(mvMousePos.x >= 800) mvMousePos.x =800;
-	if(mvMousePos.y < 0) mvMousePos.y =0;
-	if(mvMousePos.y >= 600) mvMousePos.y =600;
+
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
+	if (mvMousePos.x < 0) mvMousePos.x = 0;
+	if (mvMousePos.x >= screenSize.x) mvMousePos.x = screenSize.x;
+	if (mvMousePos.y < 0) mvMousePos.y = 0;
+	if (mvMousePos.y >= screenSize.y) mvMousePos.y = screenSize.y;
 
 	mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
 }
@@ -1505,7 +1496,6 @@ void cInventory::SetMousePos(const cVector2f &avPos)
 
 	mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
 }
-
 
 //-----------------------------------------------------------------------
 
@@ -1843,7 +1833,6 @@ void cInventory::SaveToGlobal(cInventory_GlobalSave *apSave)
 }
 
 //-----------------------------------------------------------------------
-
 
 void cInventory::LoadFromGlobal(cInventory_GlobalSave *apSave)
 {

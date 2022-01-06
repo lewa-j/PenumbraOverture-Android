@@ -350,7 +350,7 @@ bool cPlayerState_GrabHaptX::OnAddYaw(float afVal)
 	afVal *= mfSpeedMul*0.75f;
 	if(mbMoveHand)
 	{
-		if(mpPlayer->AddCrossHairPos(cVector2f(afVal * 800.0f,0)))
+		if(mpPlayer->AddCrossHairPos(cVector2f(afVal * mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().x,0)))
 		{
 			mpPlayer->GetCamera()->AddYaw( -afVal * mpPlayer->GetLookSpeed());
 			mpPlayer->GetCharacterBody()->SetYaw(mpPlayer->GetCamera()->GetYaw());
@@ -379,7 +379,7 @@ bool cPlayerState_GrabHaptX::OnAddPitch(float afVal)
 	afVal *= mfSpeedMul*0.75f;
 	if(mbMoveHand)
 	{
-		if(mpPlayer->AddCrossHairPos(cVector2f(0,afVal * 600.0f)))
+		if(mpPlayer->AddCrossHairPos(cVector2f(0,afVal * mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().y)))
 		{
 			mpPlayer->GetCamera()->AddPitch( -afVal * mpPlayer->GetLookSpeed());
 		}
@@ -673,15 +673,15 @@ void cPlayerState_MoveHaptX::OnUpdate(float afTimeStep)
 {
 	//////////////////////////////////////
 	//Check if the player is supposed to back
-	if(mpCallback->mlBackCount > 0)
+	if (mpCallback->mlBackCount > 0)
 	{
 		mpCallback->mlBackCount--;
-		mpPlayer->GetCharacterBody()->Move(eCharDir_Forward,-1,afTimeStep);
+		mpPlayer->GetCharacterBody()->Move(eCharDir_Forward, -1, afTimeStep);
 	}
 
 	//////////////////////////////////////
 	//Calculate the pick position
-	mvPickPoint = cMath::MatrixMul(mpPushBody->GetLocalMatrix(),mvRelPickPoint);
+	mvPickPoint = cMath::MatrixMul(mpPushBody->GetLocalMatrix(), mvRelPickPoint);
 
 
 	//////////////////////////////////////
@@ -689,8 +689,8 @@ void cPlayerState_MoveHaptX::OnUpdate(float afTimeStep)
 	cVector3f vEnd = mvPickPoint;
 	cVector3f vStart = mpPlayer->GetCamera()->GetPosition();
 
-	float fDistance = cMath::Vector3Dist(vStart,vEnd);
-	if(fDistance > mpPlayer->mfCurrentMaxInteractDist*1.7f)
+	float fDistance = cMath::Vector3Dist(vStart, vEnd);
+	if (fDistance > mpPlayer->mfCurrentMaxInteractDist * 1.7f)
 	{
 		//Log("Out of here %f!\n",mpPlayer->mfCurrentMaxInteractDist);
 		mpPlayer->ChangeState(mPrevState);
@@ -699,7 +699,7 @@ void cPlayerState_MoveHaptX::OnUpdate(float afTimeStep)
 
 	/////////////////////////////////////////	
 	//Check if the body should be stopped
-	if(mlMoveCount <= 0)
+	if (mlMoveCount <= 0)
 	{
 		mpPushBody->SetAngularVelocity(0);
 		mpPushBody->SetLinearVelocity(0);
@@ -707,26 +707,27 @@ void cPlayerState_MoveHaptX::OnUpdate(float afTimeStep)
 
 	///////////////////////////////////////////////////////////////////////
 	// Project the position of the pick point and set is as crosshair pos
-	cVector3f vProjPos = cMath::MatrixMul(mpPlayer->GetCamera()->GetViewMatrix(),mvPickPoint);
-	vProjPos = cMath::MatrixMulDivideW(mpPlayer->GetCamera()->GetProjectionMatrix(),vProjPos);
+	cVector3f vProjPos = cMath::MatrixMul(mpPlayer->GetCamera()->GetViewMatrix(), mvPickPoint);
+	vProjPos = cMath::MatrixMulDivideW(mpPlayer->GetCamera()->GetProjectionMatrix(), vProjPos);
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 
-	mpPlayer->SetCrossHairPos(cVector2f( (vProjPos.x+1)*0.5f*800.0f, ((-vProjPos.y)+1)*0.5f*600.0f));
+	mpPlayer->SetCrossHairPos(cVector2f((vProjPos.x + 1), ((-vProjPos.y) + 1)) * 0.5f * screenSize);
 
 	/////////////////////////////////////////////////
 	// Check if the camera should be turned
 	cVector2f vCrossPos = mpPlayer->GetCrossHairPos();
 	cVector2f vBorder = mpPlayer->GetInteractMoveBorder();
 
-	if(vCrossPos.x < vBorder.x)
-		mpPlayer->GetCamera()->AddYaw( (vBorder.x - vCrossPos.x)/800 * mpPlayer->GetLookSpeed());
-	if(vCrossPos.x > (799 - vBorder.x))
-		mpPlayer->GetCamera()->AddYaw( -(vCrossPos.x - (799 - vBorder.x))/800 * mpPlayer->GetLookSpeed());
+	if (vCrossPos.x < vBorder.x)
+		mpPlayer->GetCamera()->AddYaw((vBorder.x - vCrossPos.x) / screenSize.x * mpPlayer->GetLookSpeed());
+	if (vCrossPos.x > (screenSize.x - 1 - vBorder.x))
+		mpPlayer->GetCamera()->AddYaw(-(vCrossPos.x - (screenSize.x - 1 - vBorder.x)) / screenSize.x * mpPlayer->GetLookSpeed());
 	mpPlayer->GetCharacterBody()->SetYaw(mpPlayer->GetCamera()->GetYaw());
 
-	if(vCrossPos.y < vBorder.y)
-		mpPlayer->GetCamera()->AddPitch( (vBorder.y - vCrossPos.y)/600 * mpPlayer->GetLookSpeed());
-	if(vCrossPos.y > (599 - vBorder.y))
-		mpPlayer->GetCamera()->AddPitch( -(vCrossPos.y - (599 - vBorder.y))/600 * mpPlayer->GetLookSpeed());
+	if (vCrossPos.y < vBorder.y)
+		mpPlayer->GetCamera()->AddPitch((vBorder.y - vCrossPos.y) / screenSize.y * mpPlayer->GetLookSpeed());
+	if (vCrossPos.y > (screenSize.y - 1 - vBorder.y))
+		mpPlayer->GetCamera()->AddPitch(-(vCrossPos.y - (screenSize.y - 1 - vBorder.y)) / screenSize.y * mpPlayer->GetLookSpeed());
 }
 
 //-----------------------------------------------------------------------

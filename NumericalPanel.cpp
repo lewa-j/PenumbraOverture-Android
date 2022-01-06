@@ -28,47 +28,48 @@
 
 //-----------------------------------------------------------------------
 
-cNumericalButton::cNumericalButton(cInit *apInit, cNumericalPanel* apPanel, cVector2f avPos, 
-								cVector2f avSize, int alNum)
+cNumericalButton::cNumericalButton(cInit *apInit, cNumericalPanel *apPanel, cVector2f avPos,
+	cVector2f avSize, int alNum)
 {
 	mpInit = apInit;
 	mpPanel = apPanel;
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
 
-    mvPositon = cVector3f(avPos.x, avPos.y, 40);
+	mvPositon = cVector3f(avPos.x, avPos.y, 40);
 
 	mRect.x = avPos.x;
 	mRect.y = avPos.y;
 	mRect.w = avSize.x;
 	mRect.h = avSize.y;
 
-	mpGfxUp = mpDrawer->CreateGfxObject("numpanel_button_up","diffalpha2d");
-	mpGfxDown = mpDrawer->CreateGfxObject("numpanel_button_down","diffalpha2d");
+	mpGfxUp = mpDrawer->CreateGfxObject("numpanel_button_up", "diffalpha2d");
+	mpGfxDown = mpDrawer->CreateGfxObject("numpanel_button_down", "diffalpha2d");
 
 	mlNum = alNum;
 
-	mfAlpha = 0; 
-	mbOver = false;  
+	mfAlpha = 0;
+	mbOver = false;
 }
 
 cNumericalButton::~cNumericalButton()
 {
-
 }
 
 //-----------------------------------------------------------------------
 
 void cNumericalButton::OnUpdate(float afTimeStep)
 {
-	if(mbOver)
+	if (mbOver)
 	{
 		mfAlpha += 0.8f * afTimeStep;
-		if(mfAlpha > 1)mfAlpha = 1;
+		if (mfAlpha > 1)
+			mfAlpha = 1;
 	}
-	else 
+	else
 	{
 		mfAlpha -= 1.6f * afTimeStep;
-		if(mfAlpha < 0)mfAlpha = 0;
+		if (mfAlpha < 0)
+			mfAlpha = 0;
 	}
 }
 
@@ -76,29 +77,31 @@ void cNumericalButton::OnUpdate(float afTimeStep)
 
 void cNumericalButton::OnDraw()
 {
-	if(mbOver && mpPanel->mbMouseIsDown)
-		mpDrawer->DrawGfxObject(mpGfxDown,mvPositon,cVector2f(mRect.w,mRect.h),cColor(1,mpPanel->mfAlpha));
+	if (mbOver && mpPanel->mbMouseIsDown)
+		mpDrawer->DrawGfxObject(mpGfxDown, mvPositon, cVector2f(mRect.w, mRect.h), cColor(1, mpPanel->mfAlpha));
 	else
-		mpDrawer->DrawGfxObject(mpGfxUp,mvPositon,cVector2f(mRect.w,mRect.h),cColor(1,mpPanel->mfAlpha));
+		mpDrawer->DrawGfxObject(mpGfxUp, mvPositon, cVector2f(mRect.w, mRect.h), cColor(1, mpPanel->mfAlpha));
 
-	cVector3f vFontPos = mvPositon + cVector3f(mRect.w/2,1,1);
+	cVector3f vFontPos = mvPositon + cVector3f(mRect.w / 2, 1, 1);
 
 	tWString sChar;
-	if(mlNum==-1) sChar =_W("*");
-	else if(mlNum==-2) sChar =_W("#");
-	else sChar = cString::To16Char(cString::ToString(mlNum));
-	
-	if(mbOver && mpPanel->mbMouseIsDown)
+	if (mlNum == -1)
+		sChar = _W("*");
+	else if (mlNum == -2)
+		sChar = _W("#");
+	else
+		sChar = cString::To16Char(cString::ToString(mlNum));
+
+	if (mbOver && mpPanel->mbMouseIsDown)
 	{
-		mpInit->mpDefaultFont->Draw(vFontPos + cVector3f(1,1,0), 17, cColor(0,0,0,0.9f * mpPanel->mfAlpha),eFontAlign_Center,				
-									sChar.c_str());
+		mpInit->mpDefaultFont->Draw(vFontPos + cVector3f(1, 1, 0), 17, cColor(0, 0, 0, 0.9f * mpPanel->mfAlpha), eFontAlign_Center,
+			sChar.c_str());
 	}
 	else
 	{
-		mpInit->mpDefaultFont->Draw(vFontPos, 17, cColor(0,0,0,0.9f * mpPanel->mfAlpha),eFontAlign_Center,				
-									sChar.c_str());
+		mpInit->mpDefaultFont->Draw(vFontPos, 17, cColor(0, 0, 0, 0.9f * mpPanel->mfAlpha), eFontAlign_Center,
+			sChar.c_str());
 	}
-
 }
 
 //-----------------------------------------------------------------------
@@ -107,7 +110,7 @@ void cNumericalButton::OnMouseDown()
 {
 	mpPanel->AddDigit(mlNum);
 
-	mpInit->mpGame->GetSound()->GetSoundHandler()->PlayGui("gui_numpanel_button",false,1);
+	mpInit->mpGame->GetSound()->GetSoundHandler()->PlayGui("gui_numpanel_button", false, 1);
 }
 
 //-----------------------------------------------------------------------
@@ -131,28 +134,29 @@ void cNumericalButton::OnMouseOver(bool abOver)
 
 //-----------------------------------------------------------------------
 
-cNumericalPanel::cNumericalPanel(cInit *apInit)  : iUpdateable("NumericalPanel")
+cNumericalPanel::cNumericalPanel(cInit *apInit) : iUpdateable("NumericalPanel")
 {
 	mpInit = apInit;
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
 
 	//Load graphics (use notebook background for now).
-	mpGfxBackground = mpDrawer->CreateGfxObject("notebook_background.bmp","diffalpha2d");
+	mpGfxBackground = mpDrawer->CreateGfxObject("notebook_background.bmp", "diffalpha2d");
 
-	mpGfxPanel = mpDrawer->CreateGfxObject("numpanel_panel.bmp","diffalpha2d");
-	
-	cVector2f vPos(307, 205);
+	mpGfxPanel = mpDrawer->CreateGfxObject("numpanel_panel.bmp", "diffalpha2d");
 
-	for(int i=1; i<=12; ++i)
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+	cVector2f vPos(307, screenSize.y / 2 - 95);
+
+	for (int i = 1; i <= 12; ++i)
 	{
 		int lNum = i;
-		if(i==10) lNum=-1;
-		else if(i==11)lNum=0;
-		else if(i==12) lNum=-2;
+		if (i == 10) lNum = -1;
+		else if (i == 11)lNum = 0;
+		else if (i == 12) lNum = -2;
 
-		mlstButtons.push_back(hplNew( cNumericalButton, (mpInit,this,vPos,cVector2f(62,30),lNum)) );
-        
-		if(i%3 ==0)
+		mlstButtons.push_back(hplNew(cNumericalButton, (mpInit, this, vPos, cVector2f(62, 30), lNum)));
+
+		if (i % 3 == 0)
 		{
 			vPos.y += (30 + 16);
 			vPos.x = 307;
@@ -185,7 +189,7 @@ cNumericalPanel::~cNumericalPanel(void)
 void cNumericalPanel::Reset()
 {
 	mbActive = false;
-	mfAlpha =0;
+	mfAlpha = 0;
 	mbMouseIsDown = false;
 }
 
@@ -193,17 +197,18 @@ void cNumericalPanel::Reset()
 
 void cNumericalPanel::OnDraw()
 {
-	if(mfAlpha == 0) return;
-	
-	mpDrawer->DrawGfxObject(mpGfxBackground,cVector3f(0,0,0),cVector2f(800,600),cColor(1,mfAlpha));
+	if (mfAlpha == 0) return;
 
-	
-	mpDrawer->DrawGfxObject(mpGfxPanel,cVector3f(280,170,10),cVector2f(270,300),cColor(1,mfAlpha));
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
+	mpDrawer->DrawGfxObject(mpGfxBackground, cVector3f(0, 0, 0), screenSize, cColor(1, mfAlpha));
+
+	mpDrawer->DrawGfxObject(mpGfxPanel, cVector3f(280, screenSize.y / 2 - 130, 10), cVector2f(270, 300), cColor(1, mfAlpha));
 
 	////////////////////////////////
 	// Update buttons
 	tNumericalButtonListIt it = mlstButtons.begin();
-	for(; it != mlstButtons.end(); ++it)
+	for (; it != mlstButtons.end(); ++it)
 	{
 		cNumericalButton *pButton = *it;
 
@@ -217,10 +222,10 @@ void cNumericalPanel::Update(float afTimeStep)
 {
 	////////////////////////////////
 	// Check active and fade
-	if(mbActive==false)
+	if (mbActive == false)
 	{
-		mfAlpha -=2.5f * afTimeStep;
-		if(mfAlpha < 0)mfAlpha =0;
+		mfAlpha -= 2.5f * afTimeStep;
+		if (mfAlpha < 0)mfAlpha = 0;
 		return;
 	}
 	else
@@ -229,19 +234,19 @@ void cNumericalPanel::Update(float afTimeStep)
 		mpInit->mpPlayer->SetCrossHairState(eCrossHairState_Pointer);
 
 		mfAlpha += 2.3f * afTimeStep;
-		if(mfAlpha >1)mfAlpha =1;
+		if (mfAlpha > 1)mfAlpha = 1;
 	}
-	
+
 	////////////////////////////////
 	// Update buttons
 	tNumericalButtonListIt it = mlstButtons.begin();
-	for(; it != mlstButtons.end(); ++it)
+	for (; it != mlstButtons.end(); ++it)
 	{
 		cNumericalButton *pButton = *it;
 
 		pButton->OnUpdate(afTimeStep);
 
-		if(cMath::PointBoxCollision(mvMousePos,pButton->GetRect()))
+		if (cMath::PointBoxCollision(mvMousePos, pButton->GetRect()))
 		{
 			pButton->OnMouseOver(true);
 		}
@@ -264,10 +269,12 @@ void cNumericalPanel::AddMousePos(const cVector2f &avRel)
 {
 	mvMousePos += avRel;
 
-	if(mvMousePos.x < 0) mvMousePos.x =0;
-	if(mvMousePos.x >= 800) mvMousePos.x =800;
-	if(mvMousePos.y < 0) mvMousePos.y =0;
-	if(mvMousePos.y >= 600) mvMousePos.y =600;
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
+	if (mvMousePos.x < 0) mvMousePos.x = 0;
+	if (mvMousePos.x >= screenSize.x) mvMousePos.x = screenSize.x;
+	if (mvMousePos.y < 0) mvMousePos.y = 0;
+	if (mvMousePos.y >= screenSize.y) mvMousePos.y = screenSize.y;
 
 	mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
 }
@@ -340,7 +347,7 @@ void cNumericalPanel::SetActive(bool abX)
 			mpInit->mpPlayer->GetHapticCamera()->SetActive(true);
 
 		mpInit->mpPlayer->SetCrossHairState(mLastCrossHairState);
-		mpInit->mpPlayer->SetCrossHairPos(cVector2f(400,300));
+		mpInit->mpPlayer->ResetCrossHairPos();
 	}
 }
 

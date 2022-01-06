@@ -32,25 +32,25 @@
 
 //-----------------------------------------------------------------------
 
-cDeathMenuButton::cDeathMenuButton(cInit *apInit, cVector2f avPos, const tWString& asText)
+cDeathMenuButton::cDeathMenuButton(cInit *apInit, cVector2f avPos, const tWString &asText)
 {
 	mpInit = apInit;
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
 
 	mvPositon = cVector3f(avPos.x, avPos.y, 40);
-	
-	mvFontSize = cVector2f(21,21);
+
+	mvFontSize = cVector2f(21, 21);
 	msText = asText;
 
 	mpFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("verdana.fnt");
-	
-	mRect.w = mpFont->GetLength(mvFontSize,msText.c_str());
-	mRect.h = mvFontSize.y +3;
-	mRect.x = avPos.x - mRect.w/2;
-	mRect.y = avPos.y+3;
 
-	mfAlpha = 0; 
-	mbOver = false;  
+	mRect.w = mpFont->GetLength(mvFontSize, msText.c_str());
+	mRect.h = mvFontSize.y + 3;
+	mRect.x = avPos.x - mRect.w / 2;
+	mRect.y = avPos.y + 3;
+
+	mfAlpha = 0;
+	mbOver = false;
 }
 
 cDeathMenuButton::~cDeathMenuButton()
@@ -62,15 +62,17 @@ cDeathMenuButton::~cDeathMenuButton()
 
 void cDeathMenuButton::OnUpdate(float afTimeStep)
 {
-	if(mbOver)
+	if (mbOver)
 	{
 		mfAlpha += 0.8f * afTimeStep;
-		if(mfAlpha > 1)mfAlpha = 1;
+		if (mfAlpha > 1)
+			mfAlpha = 1;
 	}
-	else 
+	else
 	{
 		mfAlpha -= 1.6f * afTimeStep;
-		if(mfAlpha < 0)mfAlpha = 0;
+		if (mfAlpha < 0)
+			mfAlpha = 0;
 	}
 }
 
@@ -80,9 +82,9 @@ void cDeathMenuButton::OnDraw()
 {
 	float fAlpha = mpInit->mpDeathMenu->mfAlpha;
 
-	mpFont->Draw(mvPositon,mvFontSize,cColor(0.8f,0.7f,0.7f,fAlpha),eFontAlign_Center,msText.c_str());
-	
-	mpFont->Draw(mvPositon+cVector3f(0,0,1),mvFontSize,cColor(1,0,0,fAlpha*mfAlpha),eFontAlign_Center,msText.c_str());
+	mpFont->Draw(mvPositon, mvFontSize, cColor(0.8f, 0.7f, 0.7f, fAlpha), eFontAlign_Center, msText.c_str());
+
+	mpFont->Draw(mvPositon + cVector3f(0, 0, 1), mvFontSize, cColor(1, 0, 0, fAlpha * mfAlpha), eFontAlign_Center, msText.c_str());
 }
 
 //-----------------------------------------------------------------------
@@ -94,7 +96,6 @@ void cDeathMenuButton::OnMouseOver(bool abOver)
 
 //-----------------------------------------------------------------------
 
-
 //////////////////////////////////////////////////////////////////////////
 // CONTINUE
 //////////////////////////////////////////////////////////////////////////
@@ -103,32 +104,32 @@ void cDeathMenuButton::OnMouseOver(bool abOver)
 
 void cDeathMenuButton_Continue::OnMouseDown()
 {
-	tWString sAuto = _W("save/auto/") + mpInit->mpSaveHandler->GetLatest(_W("save/auto/"),_W("*.sav"));
-	tWString sSpot = _W("save/spot/") + mpInit->mpSaveHandler->GetLatest(_W("save/spot/"),_W("*.sav"));
+	tWString sAuto = _W("save/auto/") + mpInit->mpSaveHandler->GetLatest(_W("save/auto/"), _W("*.sav"));
+	tWString sSpot = _W("save/spot/") + mpInit->mpSaveHandler->GetLatest(_W("save/spot/"), _W("*.sav"));
 
 	tWString sFile = _W("");
 
-	if(sAuto == _W("save/auto/"))
+	if (sAuto == _W("save/auto/"))
 	{
 		sFile = sSpot;
 	}
-	else if(sSpot == _W("save/spot/"))
+	else if (sSpot == _W("save/spot/"))
 	{
 		sFile = sAuto;
 	}
 	else
 	{
 		tWString sSaveDir = mpInit->mpSaveHandler->GetSaveDir();
-		cDate dateAuto = cPlatform::FileModifiedDate(sSaveDir +sAuto);
-		cDate dateSpot = cPlatform::FileModifiedDate(sSaveDir +sSpot);
+		cDate dateAuto = cPlatform::FileModifiedDate(sSaveDir + sAuto);
+		cDate dateSpot = cPlatform::FileModifiedDate(sSaveDir + sSpot);
 
-		if(dateAuto > dateSpot) 
+		if (dateAuto > dateSpot)
 			sFile = sAuto;
 		else
 			sFile = sSpot;
 	}
 
-	if(sFile != _W(""))
+	if (sFile != _W(""))
 		mpInit->mpSaveHandler->LoadGameFromFile(sFile);
 }
 
@@ -166,13 +167,13 @@ void cDeathMenuButton_BackToMain::OnMouseUp()
 
 //-----------------------------------------------------------------------
 
-cDeathMenu::cDeathMenu(cInit *apInit)  : iUpdateable("NumericalPanel")
+cDeathMenu::cDeathMenu(cInit *apInit) : iUpdateable("DeathMenu")
 {
 	mpInit = apInit;
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
 
 	//Load graphics (use notebook background for now).
-	mpGfxBackground = mpDrawer->CreateGfxObject("notebook_background.bmp","diffalpha2d");
+	mpGfxBackground = mpDrawer->CreateGfxObject("notebook_background.bmp", "diffalpha2d");
 
 	mpFont = mpInit->mpGame->GetResources()->GetFontManager()->CreateFontData("verdana.fnt");
 
@@ -200,7 +201,7 @@ cDeathMenu::~cDeathMenu(void)
 void cDeathMenu::Reset()
 {
 	mbActive = false;
-	mfAlpha =0;
+	mfAlpha = 0;
 	mbMouseIsDown = false;
 }
 
@@ -208,17 +209,19 @@ void cDeathMenu::Reset()
 
 void cDeathMenu::OnDraw()
 {
-	if(mfAlpha == 0) return;
+	if (mfAlpha == 0) return;
 
-	mpDrawer->DrawGfxObject(mpGfxBackground,cVector3f(0,0,0),cVector2f(800,600),cColor(1,mfAlpha));
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 
-	mpFont->DrawWordWrap(	cVector3f(400,210,40),500,25,24,cColor(0.7f,0.3f,0.3f),eFontAlign_Center,
-							kTranslate("DeathMenu","YouAreDead").c_str());
+	mpDrawer->DrawGfxObject(mpGfxBackground, cVector3f(0, 0, 0), screenSize, cColor(1, mfAlpha));
+
+	mpFont->DrawWordWrap(cVector3f(screenSize.x / 2, screenSize.y / 2 - 90, 40), 500, 25, 24, cColor(0.7f, 0.3f, 0.3f), eFontAlign_Center,
+		kTranslate("DeathMenu", "YouAreDead").c_str());
 
 	////////////////////////////////
 	// Update buttons
 	tDeathMenuButtonListIt it = mlstButtons.begin();
-	for(; it != mlstButtons.end(); ++it)
+	for (; it != mlstButtons.end(); ++it)
 	{
 		cDeathMenuButton *pButton = *it;
 
@@ -232,10 +235,10 @@ void cDeathMenu::Update(float afTimeStep)
 {
 	////////////////////////////////
 	// Check active and fade
-	if(mbActive==false)
+	if (mbActive == false)
 	{
-		mfAlpha -=2.5f * afTimeStep;
-		if(mfAlpha < 0)mfAlpha =0;
+		mfAlpha -= 2.5f * afTimeStep;
+		if (mfAlpha < 0)mfAlpha = 0;
 		return;
 	}
 	else
@@ -244,19 +247,19 @@ void cDeathMenu::Update(float afTimeStep)
 		mpInit->mpPlayer->SetCrossHairState(eCrossHairState_Pointer);
 
 		mfAlpha += 2.3f * afTimeStep;
-		if(mfAlpha >1)mfAlpha =1;
+		if (mfAlpha > 1)mfAlpha = 1;
 	}
 
 	////////////////////////////////
 	// Update buttons
 	tDeathMenuButtonListIt it = mlstButtons.begin();
-	for(; it != mlstButtons.end(); ++it)
+	for (; it != mlstButtons.end(); ++it)
 	{
 		cDeathMenuButton *pButton = *it;
 
 		pButton->OnUpdate(afTimeStep);
 
-		if(cMath::PointBoxCollision(mvMousePos,pButton->GetRect()))
+		if (cMath::PointBoxCollision(mvMousePos, pButton->GetRect()))
 		{
 			pButton->OnMouseOver(true);
 		}
@@ -274,14 +277,17 @@ void cDeathMenu::SetMousePos(const cVector2f &avPos)
 	mvMousePos = avPos;
 	mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
 }
+
 void cDeathMenu::AddMousePos(const cVector2f &avRel)
 {
 	mvMousePos += avRel;
 
-	if(mvMousePos.x < 0) mvMousePos.x =0;
-	if(mvMousePos.x >= 800) mvMousePos.x =800;
-	if(mvMousePos.y < 0) mvMousePos.y =0;
-	if(mvMousePos.y >= 600) mvMousePos.y =600;
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
+	if (mvMousePos.x < 0) mvMousePos.x = 0;
+	if (mvMousePos.x >= screenSize.x) mvMousePos.x = screenSize.x;
+	if (mvMousePos.y < 0) mvMousePos.y = 0;
+	if (mvMousePos.y >= screenSize.y) mvMousePos.y = screenSize.y;
 
 	mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
 }
@@ -293,11 +299,11 @@ void cDeathMenu::OnMouseDown(eMButton aButton)
 	////////////////////////////////
 	// Update buttons
 	tDeathMenuButtonListIt it = mlstButtons.begin();
-	for(; it != mlstButtons.end(); ++it)
+	for (; it != mlstButtons.end(); ++it)
 	{
 		cDeathMenuButton *pButton = *it;
 
-		if(cMath::PointBoxCollision(mvMousePos,pButton->GetRect()))
+		if (cMath::PointBoxCollision(mvMousePos, pButton->GetRect()))
 		{
 			pButton->OnMouseDown();
 		}
@@ -311,11 +317,11 @@ void cDeathMenu::OnMouseUp(eMButton aButton)
 	////////////////////////////////
 	// Update buttons
 	tDeathMenuButtonListIt it = mlstButtons.begin();
-	for(; it != mlstButtons.end(); ++it)
+	for (; it != mlstButtons.end(); ++it)
 	{
 		cDeathMenuButton *pButton = *it;
 
-		if(cMath::PointBoxCollision(mvMousePos,pButton->GetRect()))
+		if (cMath::PointBoxCollision(mvMousePos, pButton->GetRect()))
 		{
 			pButton->OnMouseUp();
 		}
@@ -328,40 +334,42 @@ void cDeathMenu::OnMouseUp(eMButton aButton)
 
 void cDeathMenu::SetActive(bool abX)
 {
-	if(mbActive == abX) return;
+	if (mbActive == abX) return;
 
 	mbActive = abX;
 
-	if(mbActive)
+	if (mbActive)
 	{
-		if(mpInit->mbHasHaptics)
+		if (mpInit->mbHasHaptics)
 			mpInit->mpPlayer->GetHapticCamera()->SetActive(false);
 
 		mLastCrossHairState = mpInit->mpPlayer->GetCrossHairState();
 
 		mpInit->mpPlayer->SetCrossHairPos(mvMousePos);
 		mpInit->mpPlayer->SetCrossHairState(eCrossHairState_Pointer);
-		
+
 		STLDeleteAll(mlstButtons);
-		
+
+		const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
 		//Continue
-		tWString sAuto = mpInit->mpSaveHandler->GetLatest(_W("save/auto/"),_W("*.sav"));
-		tWString sSpot = mpInit->mpSaveHandler->GetLatest(_W("save/spot/"),_W("*.sav"));
-		if(sAuto != _W("") || sSpot != _W(""))
+		tWString sAuto = mpInit->mpSaveHandler->GetLatest(_W("save/auto/"), _W("*.sav"));
+		tWString sSpot = mpInit->mpSaveHandler->GetLatest(_W("save/spot/"), _W("*.sav"));
+		if (sAuto != _W("") || sSpot != _W(""))
 		{
-			mlstButtons.push_back(hplNew( cDeathMenuButton_Continue, (mpInit,cVector2f(400,290),kTranslate("DeathMenu","Continue"))) );
+			mlstButtons.push_back(hplNew(cDeathMenuButton_Continue, (mpInit, cVector2f(screenSize.x / 2, screenSize.y / 2 - 10), kTranslate("DeathMenu", "Continue"))));
 		}
-		
+
 		//Back to Main
-		mlstButtons.push_back(hplNew( cDeathMenuButton_BackToMain, (mpInit,cVector2f(400,350),kTranslate("DeathMenu","BackToMainMenu")) ) );
+		mlstButtons.push_back(hplNew(cDeathMenuButton_BackToMain, (mpInit, cVector2f(screenSize.x / 2, screenSize.y / 2 + 50), kTranslate("DeathMenu", "BackToMainMenu"))));
 	}
 	else
 	{
-		if(mpInit->mbHasHaptics)
+		if (mpInit->mbHasHaptics)
 			mpInit->mpPlayer->GetHapticCamera()->SetActive(true);
 
 		mpInit->mpPlayer->SetCrossHairState(mLastCrossHairState);
-		mpInit->mpPlayer->SetCrossHairPos(cVector2f(400,300));
+		mpInit->mpPlayer->ResetCrossHairPos();
 	}
 }
 

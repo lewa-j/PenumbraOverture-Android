@@ -234,7 +234,7 @@ bool cInit::Init(tString asCommandLine)
 		mpConfig->Save();
 	}
 
-    mpGameConfig = hplNew( cConfigFile, (_W("config/game.cfg")) );
+	mpGameConfig = hplNew( cConfigFile, (_W("config/game.cfg")) );
 	mpGameConfig->Load();
 
 	mvScreenSize.x = mpConfig->GetInt("Screen","Width",800);

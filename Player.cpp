@@ -212,7 +212,7 @@ cPlayer::cPlayer(cInit *apInit)  : iUpdateable("Player")
 
 	//Cross hair
 	mCrossHairState = eCrossHairState_None;
-	mvCrossHairPos = cVector2f(400, 300);
+	mvCrossHairPos = mpGraphics->GetLowLevel()->GetVirtualSize() * 0.5f;
 	
 	mvCrossHairs.resize(eCrossHairState_LastEnum);
 
@@ -471,6 +471,8 @@ bool cPlayer::AddCrossHairPos(const cVector2f& avPos)
 { 
 	bool abEdge = false; 
 
+	cVector2f screenSize = mpGraphics->GetLowLevel()->GetVirtualSize();
+
 	mvCrossHairPos += avPos;
 	if(mvCrossHairPos.x <mvInteractMoveBorder.x){
 		mvCrossHairPos.x =mvInteractMoveBorder.x;
@@ -480,12 +482,12 @@ bool cPlayer::AddCrossHairPos(const cVector2f& avPos)
 		mvCrossHairPos.y =mvInteractMoveBorder.y;
 		abEdge = true;
 	}
-	if(mvCrossHairPos.x > (799 - mvInteractMoveBorder.x)){
-		mvCrossHairPos.x =(799 - mvInteractMoveBorder.x);
+	if(mvCrossHairPos.x > (screenSize.x - 1 - mvInteractMoveBorder.x)){
+		mvCrossHairPos.x = (screenSize.x - 1 - mvInteractMoveBorder.x);
 		abEdge = true;
 	}
-	if(mvCrossHairPos.y > (599 - mvInteractMoveBorder.y)){
-		mvCrossHairPos.y =(599 - mvInteractMoveBorder.y);
+	if(mvCrossHairPos.y > (screenSize.y - 1 - mvInteractMoveBorder.y)){
+		mvCrossHairPos.y = (screenSize.y - 1 - mvInteractMoveBorder.y);
 		abEdge = true;
 	}
 
@@ -1391,7 +1393,7 @@ void cPlayer::Reset()
 
 	//Crosshair
 	mCrossHairState = eCrossHairState_None;
-	mvCrossHairPos = cVector2f(400, 300);
+	mvCrossHairPos = mpGraphics->GetLowLevel()->GetVirtualSize() * 0.5f;
 
 	//Stats
 	mlStat_NumOfSaves =0;
@@ -1456,7 +1458,7 @@ void cPlayer::OnDraw()
 			vProjPos = cMath::MatrixMulDivideW(mpCamera->GetProjectionMatrix(),vProjPos);
 			
 			cVector2f vPos(	(vProjPos.x+1) * 0.5f, (-vProjPos.y+1)* 0.5f);
-			vPos *= cVector2f(800,600);
+			vPos *= mpGraphics->GetLowLevel()->GetVirtualSize();
 
 			vPos += cVector2f(10,10);
 			cResourceImage *pImage = mvCrossHairs[mCrossHairState]->GetMaterial()->GetImage(eMaterialTexture_Diffuse);
@@ -1479,11 +1481,11 @@ void cPlayer::OnDraw()
 			
 			if(mbItemFlash)
 			{
-				mpGfxDrawer->DrawGfxObject(pObject,cVector3f(0,0,100)+(mvCrossHairPos - vPosAdd),vSize,
+				mpGfxDrawer->DrawGfxObject(pObject, cVector3f(0, 0, 100) + (mvCrossHairPos - vPosAdd), vSize,
 											cColor(1,1,1,1));
-				for(int i=0; i<2; ++i)
-					mpGfxDrawer->DrawGfxObject(pAdditive,cVector3f(0,0,101)+(mvCrossHairPos - vPosAdd),vSize,
-											cColor(1,1,1,mItemFlash.val));
+				for (int i = 0; i < 2; ++i)
+					mpGfxDrawer->DrawGfxObject(pAdditive, cVector3f(0, 0, 101) + (mvCrossHairPos - vPosAdd), vSize,
+						cColor(1, 1, 1, mItemFlash.val));
 				
 				/*mpGfxDrawer->DrawGfxObject(pAdditive,cVector3f(3,3,99)+(mvCrossHairPos - vPosAdd),vSize,
 											cColor(0,1,0,mItemFlash.val*0.8f));
@@ -1496,8 +1498,8 @@ void cPlayer::OnDraw()
 			}
 			else
 			{
-				mpGfxDrawer->DrawGfxObject(pObject,cVector3f(0,0,100)+(mvCrossHairPos - vPosAdd),vSize,
-					cColor(1,0.3f,0.3f,1.0f));
+				mpGfxDrawer->DrawGfxObject(pObject, cVector3f(0, 0, 100) + (mvCrossHairPos - vPosAdd), vSize,
+					cColor(1, 0.3f, 0.3f, 1.0f));
 			}
 		}
 	}
@@ -1506,15 +1508,14 @@ void cPlayer::OnDraw()
 		cResourceImage *pImage = mvCrossHairs[mCrossHairState]->GetMaterial()->GetImage(eMaterialTexture_Diffuse);
 		cVector2l vSize = pImage->GetSize();
 		cVector2f vPosAdd(((float)vSize.x) / 2.0f, ((float)vSize.y) / 2.0f);
-		mpGfxDrawer->DrawGfxObject(mvCrossHairs[mCrossHairState],cVector3f(0,0,100)+(mvCrossHairPos - vPosAdd));
+		mpGfxDrawer->DrawGfxObject(mvCrossHairs[mCrossHairState], cVector3f(0, 0, 100) + (mvCrossHairPos - vPosAdd));
 	}
 	else if(mpInit->mbShowCrossHair)
 	{
-		cVector3f vPos = cVector3f(400,300,0);
 		cResourceImage *pImage = mvCrossHairs[eCrossHairState_Cross]->GetMaterial()->GetImage(eMaterialTexture_Diffuse);
 		cVector2l vSize = pImage->GetSize();
 		cVector2f vPosAdd(((float)vSize.x) / 2.0f, ((float)vSize.y) / 2.0f);
-		mpGfxDrawer->DrawGfxObject(mvCrossHairs[eCrossHairState_Cross],cVector3f(0,0,100)+(vPos - vPosAdd));
+		mpGfxDrawer->DrawGfxObject(mvCrossHairs[eCrossHairState_Cross], cVector3f(0, 0, 100) + (mvCrossHairPos - vPosAdd));
 	}
 
 	//DEBUG: Memory
@@ -1608,7 +1609,7 @@ void cPlayer::OnDraw()
 	//DEBUG: health
 	if(mbShowHealth)
 	{
-		mpFont->Draw(cVector3f(5,35,0),12,cColor(1,1,1,1),eFontAlign_Left,_W("Health: %.0f"),
+		mpFont->Draw(cVector3f(5,25,0),12,cColor(1,1,1,1),eFontAlign_Left,_W("Health: %.0f"),
 								mfHealth);
 	}
 	
@@ -1719,7 +1720,7 @@ void cPlayer::OnDraw()
 
 	if (mpFont)
 	{
-		mpFont->Draw(cVector2f(5, 45), 12, cColor(1, 1), eFontAlign_Left, _W("FPS: %.1f"), mpInit->mpGame->GetFPS());
+		mpFont->Draw(cVector2f(5, 35), 12, cColor(1, 1), eFontAlign_Left, _W("FPS: %.1f"), mpInit->mpGame->GetFPS());
 	}
 }
 

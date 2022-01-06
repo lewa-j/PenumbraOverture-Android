@@ -547,15 +547,15 @@ cPlayerHealth::cPlayerHealth(cInit *apInit)
 	mfTimeCount = 0;
 
 	mpDrawer = mpInit->mpGame->GetGraphics()->GetDrawer();
-	
-	mpDamageGfx = mpDrawer->CreateGfxObject("player_hurt.bmp","diffalpha2d");
 
-	mfGfxAlpha =0;
-	mfGfxAlphaAdd =0;
+	mpDamageGfx = mpDrawer->CreateGfxObject("player_hurt.bmp", "diffalpha2d");
 
-	mfGfxGlobalAlpha =0;
+	mfGfxAlpha = 0;
+	mfGfxAlphaAdd = 0;
 
-	mfTerrorCheckCount =0;
+	mfGfxGlobalAlpha = 0;
+
+	mfTerrorCheckCount = 0;
 
 	mpSoundEntry = NULL;
 }
@@ -564,11 +564,11 @@ cPlayerHealth::cPlayerHealth(cInit *apInit)
 
 void cPlayerHealth::Reset()
 {
-	mfTerrorCheckCount =0;
-	if(mpSoundEntry) mpSoundEntry->mpSound->Stop();
+	mfTerrorCheckCount = 0;
+	if (mpSoundEntry) mpSoundEntry->mpSound->Stop();
 	mpSoundEntry = NULL;
 
-	mlTerrorLevel =0;
+	mlTerrorLevel = 0;
 }
 
 //-----------------------------------------------------------------------
@@ -739,11 +739,11 @@ void cPlayerHealth::Update(float afTimeStep)
 
 void cPlayerHealth::Draw()
 {
-	if(mfGfxAlpha <=0) return;
+	if (mfGfxAlpha <= 0) return;
 
-	mpDrawer->DrawGfxObject(mpDamageGfx,cVector3f(0,0,50),cVector2f(800,600),
-							cColor(1, mfGfxGlobalAlpha * mfGfxAlpha));
-}
+	mpDrawer->DrawGfxObject(mpDamageGfx, cVector3f(0, 0, 50), mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize(),
+		cColor(1, mfGfxGlobalAlpha * mfGfxAlpha));
+};
 
 //-----------------------------------------------------------------------
 
@@ -1155,7 +1155,7 @@ void cPlayerDamage::Draw()
 {
 	if(mbActive==false) return;
 
-	mpDrawer->DrawGfxObject(mvHitGfx[mType],cVector3f(0,0,3),cVector2f(800, 600),cColor(1,mfAlpha*0.6f));
+	mpDrawer->DrawGfxObject(mvHitGfx[mType], cVector3f(0, 0, 3), mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize(), cColor(1, mfAlpha * 0.6f));
 }
 
 //-----------------------------------------------------------------------
@@ -1268,25 +1268,24 @@ void cPlayerDeath::Update(float afTimeStep)
 
 void cPlayerDeath::Draw()
 {
-	if(mbActive==false) return;
+	if (mbActive == false) return;
 
-    cVector3f vPos(-mfFadeAlpha*400 - mfBlackAlpha*200,-mfFadeAlpha*400 -  mfBlackAlpha*200,4);
-	cVector2f vSize(800 + mfFadeAlpha*800 + mfBlackAlpha*400, 600 + mfFadeAlpha*800+ mfBlackAlpha*400);
-	mpDrawer->DrawGfxObject(mpFadeGfx,vPos,vSize,cColor(mfFadeAlpha,0));
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 
-	mpDrawer->DrawGfxObject(mpBlackGfx,cVector3f(0,0,5),cVector2f(800,600),cColor(mfBlackAlpha,0));
+	cVector3f vPos(screenSize.x * (-mfFadeAlpha * 0.5f - mfBlackAlpha * 0.25f), screenSize.x * (-mfFadeAlpha * 0.5f - mfBlackAlpha * 0.25f), 4);
+	cVector2f vSize(screenSize + cVector2f(screenSize.x * (mfFadeAlpha + mfBlackAlpha * 0.5f)));
+	mpDrawer->DrawGfxObject(mpFadeGfx, vPos, vSize, cColor(mfFadeAlpha, 0));
+
+	mpDrawer->DrawGfxObject(mpBlackGfx, cVector3f(0, 0, 5), screenSize, cColor(mfBlackAlpha, 0));
 }
 
-
 //-----------------------------------------------------------------------
-
 
 /////////////////////////////////////////////////////////////////////////
 // FLASHLIGHT
 //////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------
-
 
 cPlayerFlashLight::cPlayerFlashLight(cInit *apInit)
 {
@@ -1299,19 +1298,17 @@ cPlayerFlashLight::cPlayerFlashLight(cInit *apInit)
 
 //-----------------------------------------------------------------------
 
-
 cPlayerFlashLight::~cPlayerFlashLight()
 {
 }
 
 //-----------------------------------------------------------------------
 
-
 void cPlayerFlashLight::Reset()
 {
 	mbActive = false;
-	mfAlpha =0;
-	mfFlickerTime =0;
+	mfAlpha = 0;
+	mfFlickerTime = 0;
 
 	mfRayCastTime = 0;
 	mpClosestBody = NULL;
@@ -1322,12 +1319,12 @@ void cPlayerFlashLight::Reset()
 
 //-----------------------------------------------------------------------
 
-bool cPlayerFlashLight::OnIntersect(iPhysicsBody *pBody,cPhysicsRayParams *apParams)
+bool cPlayerFlashLight::OnIntersect(iPhysicsBody *pBody, cPhysicsRayParams *apParams)
 {
-	if(pBody->GetCollide()==false) return true;
-	if(pBody->IsCharacter() && pBody == mpInit->mpPlayer->GetCharacterBody()->GetBody()) return true;
+	if (pBody->GetCollide() == false) return true;
+	if (pBody->IsCharacter() && pBody == mpInit->mpPlayer->GetCharacterBody()->GetBody()) return true;
 
-	if(apParams->mfDist < mfClosestDist)
+	if (apParams->mfDist < mfClosestDist)
 	{
 		mfClosestDist = apParams->mfDist;
 		mpClosestBody = pBody;
@@ -1877,7 +1874,6 @@ cPlayerNoiseFilter::cPlayerNoiseFilter(cInit *apInit)
 
 //-----------------------------------------------------------------------
 
-
 cPlayerNoiseFilter::~cPlayerNoiseFilter()
 {
 	mpInit->mpConfig->SetBool("Graphics", "NoiseFilter",mbActive);	
@@ -2161,7 +2157,6 @@ void cPlayerHidden::OnWorldExit()
 
 //-----------------------------------------------------------------------
 
-
 void cPlayerHidden::Draw()
 {
 	/*if(mfLight <= mfMaxLight)
@@ -2174,7 +2169,7 @@ void cPlayerHidden::Draw()
 	{
 		mpFont->Draw(5,12,cColor(1,0.3f,0.3f),eFontAlign_Left,_W("Light: %f\n"),mfLight);
 	}
-	
+
 	if(mbHidden)
 		mpFont->Draw(cVector3f(5,19,5),12,cColor(1,1,1),eFontAlign_Left,_W("Hidden\n"));
 	*/
@@ -2195,16 +2190,17 @@ void cPlayerHidden::Draw()
 													mbEnemyTooClose);
 
 	mpFont->Draw(cVector3f(5,19,5),12,cColor(1,1,1),eFontAlign_Left,"Fov: %f Add: %f\n",
-													mfCloseEffectFov,fAdd);*/
+													mfCloseEffectFov,fAdd);
+	*/
 
-	
 	//Draw in shadow effect
-	if(mfInShadowAlpha>0)
+	if (mfInShadowAlpha > 0)
 	{
-		float fAlpha = (mfInShadowPulse*0.5f + 0.5f) * mfInShadowAlpha *0.85f;
-		mpDrawer->DrawGfxObject(mpInShadowGfx,cVector3f(-mfEffectOffset,-mfEffectOffset,0),
-								cVector2f(800+mfEffectOffset*2, 600+mfEffectOffset*2),
-								cColor(fAlpha,fAlpha));
+		const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
+		float fAlpha = (mfInShadowPulse * 0.5f + 0.5f) * mfInShadowAlpha * 0.85f;
+		mpDrawer->DrawGfxObject(mpInShadowGfx, cVector3f(-mfEffectOffset, -mfEffectOffset, 0),
+			screenSize + cVector2f(mfEffectOffset * 2), cColor(fAlpha, fAlpha));
 	}
 }
 
@@ -2212,22 +2208,22 @@ void cPlayerHidden::Draw()
 
 void cPlayerHidden::UnHide()
 {
-	if(mbHidden){
-		mpLight->FadeTo(cColor(0,0,0,0),mpLight->GetFarAttenuation(),mfHiddenOffTime);
-		
-		if(mfHiddenOnCount >2)
-			mpSoundHandler->PlayGui("player_hidden_off",false,1);
+	if (mbHidden) {
+		mpLight->FadeTo(cColor(0, 0, 0, 0), mpLight->GetFarAttenuation(), mfHiddenOffTime);
+
+		if (mfHiddenOnCount > 2)
+			mpSoundHandler->PlayGui("player_hidden_off", false, 1);
 	}
 	mbHidden = false;
-	mfHiddenCount =0;
-	mfHiddenOnCount =0;
+	mfHiddenCount = 0;
+	mfHiddenOnCount = 0;
 
-	if(mbEnemyTooClose)
+	if (mbEnemyTooClose)
 	{
 		mpInit->mpGame->GetGraphics()->GetRendererPostEffects()->SetImageTrailActive(false);
 	}
 
-	mfEnemyTooCloseCount =0;
+	mfEnemyTooCloseCount = 0;
 	mbEnemyTooClose = false;
 }
 
@@ -2407,7 +2403,7 @@ void cPlayerHidden::Update(float afTimeStep)
 	{
 		mfUpdateCount = 1.0f / 2.0f;
 		
-		mfLight =  GetMaxRGB(mpInit->mpGame->GetGraphics()->GetRenderer3D()->GetAmbientColor());
+		mfLight = GetMaxRGB(mpInit->mpGame->GetGraphics()->GetRenderer3D()->GetAmbientColor());
 		cWorld3D *pWorld = mpInit->mpGame->GetScene()->GetWorld3D();
 		if(pWorld==NULL) return;
 		iPhysicsWorld *pPhysicsWorld = pWorld->GetPhysicsWorld();
@@ -2433,8 +2429,7 @@ void cPlayerHidden::Update(float afTimeStep)
 				float fAmount = GetMaxRGB(pLight->GetDiffuseColor());
 				
 				//Get distance to the light
-				float fDist = cMath::Vector3Dist(	pLight->GetWorldPosition(),
-													pPlayerBV->GetWorldCenter());
+				float fDist = cMath::Vector3Dist( pLight->GetWorldPosition(), pPlayerBV->GetWorldCenter());
 
 				//Calculate attenuation
 				float fT = 1 - fDist / pLight->GetFarAttenuation();
@@ -2518,11 +2513,9 @@ bool cPlayerHidden::HasLineOfSight(iLight3D *pLight,iPhysicsWorld *pPhysicsWorld
 			return false;
 		}
 	}
-	
 
 	int lCount =0;
 
-	
 	cVector3f vPosAdd[5];
 	int lPosAddNum = 5;
 
@@ -2745,11 +2738,9 @@ void cPlayerHidden::UpdateEnemyTooClose(float afTimeStep)
 			mpInit->mpGame->GetGraphics()->GetRendererPostEffects()->SetImageTrailActive(false);
 		}
 	}
-
 }
 
 //-----------------------------------------------------------------------
-
 
 void cPlayerHidden::Reset()
 {

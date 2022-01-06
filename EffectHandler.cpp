@@ -68,11 +68,12 @@ void cEffect_Underwater::Update(float afTimeStep)
 
 void cEffect_Underwater::OnDraw()
 {
-	if(mbActive==false) return;
-	
-	cColor invColor(1-mColor.r,1-mColor.g,1-mColor.b,0);
-	mpDrawer->DrawGfxObject(mpWhiteGfx,0,cVector2f(800,600),invColor);
+	if (mbActive == false) return;
+
+	cColor invColor(1 - mColor.r, 1 - mColor.g, 1 - mColor.b, 0);
+	mpDrawer->DrawGfxObject(mpWhiteGfx, 0, mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize(), invColor);
 }
+
 //-----------------------------------------------------------------------
 
 void cEffect_Underwater::Reset()
@@ -288,12 +289,10 @@ void cEffect_SaveEffect::Update(float afTimeStep)
 
 void cEffect_SaveEffect::OnDraw()
 {
-	if(mbActive==false) return;
+	if (mbActive == false) return;
 
-	mpDrawer->DrawGfxObject(mpFlashGfx,0,cVector2f(800,600),
-							cColor(1,1) * mfFlashAlpha + 
-							mFlashColor * (1- mfFlashAlpha) 
-							);
+	mpDrawer->DrawGfxObject(mpFlashGfx, 0, mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize(),
+		cColor(1, 1) * mfFlashAlpha + mFlashColor * (1 - mfFlashAlpha));
 }
 
 void cEffect_SaveEffect::Reset()
@@ -651,9 +650,9 @@ void cEffect_Flash::Update(float afTimeStep)
 
 void cEffect_Flash::OnDraw()
 {
-	if(mbActive==false) return;
+	if (mbActive == false) return;
 
-	mpDrawer->DrawGfxObject(mpWhiteGfx,0,cVector2f(800,600),cColor(1,mfAlpha));
+	mpDrawer->DrawGfxObject(mpWhiteGfx, 0, mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize(), cColor(1, mfAlpha));
 }
 
 //-----------------------------------------------------------------------

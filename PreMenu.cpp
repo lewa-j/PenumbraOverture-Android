@@ -357,7 +357,7 @@ void cPreMenu::Update(float afTimeStep)
 		}
 	}
 
-    // Update raindrops
+	// Update raindrops
 	for (int i = 0; i < (int)mvRaindropVector.size(); ++i)
 	{
 		cRaindrop *pRaindrop = &(mvRaindropVector[i]);
@@ -366,8 +366,8 @@ void cPreMenu::Update(float afTimeStep)
 			
 		if (pRaindrop->vPos.y > screenSize.y)
 		{
-			pRaindrop->vPos = cVector2f(cMath::RandRectf(-60, screenSize.y), -80);
-			pRaindrop->vDir = cVector2f(cMath::RandRectf(20, 100), screenSize.x);
+			pRaindrop->vPos = cVector2f(cMath::RandRectf(-60, screenSize.x), -80);
+			pRaindrop->vDir = cVector2f(cMath::RandRectf(20, 100), screenSize.y);
 			pRaindrop->vDir.Normalise();
 			pRaindrop->fLength = cMath::RandRectf(30, 70);
 			pRaindrop->fColor = cMath::RandRectf(0.5f, 1) * mfRaindropFade;

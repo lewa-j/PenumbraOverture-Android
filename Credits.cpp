@@ -70,7 +70,7 @@ void cCredits::Reset()
 {
 	mbActive = false;
 	
-	mfYPos =600;
+	mfYPos = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize().y;
 }
 
 //-----------------------------------------------------------------------
@@ -78,41 +78,41 @@ void cCredits::Reset()
 void cCredits::OnPostSceneDraw()
 {
 	mpInit->mpGraphicsHelper->ClearScreen(cColor(0,0));
-	
 }
 
 //-----------------------------------------------------------------------
 
-
 void cCredits::OnDraw()
 {
-	float fSize[2] = {17,19};
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+	float fSize[2] = { 17,19 };
 	float fY = mfYPos;
-	for(size_t i=0; i< mvTextRows.size(); ++i)
+	for (size_t i = 0; i < mvTextRows.size(); ++i)
 	{
-		int lSize =0;
-		if(mvTextRows[i][0] == _W('*'))
+		int lSize = 0;
+		if (mvTextRows[i][0] == _W('*'))
 		{
-			lSize=1;
+			lSize = 1;
 		}
-		if(mvTextRows[i].size()<=1)
+		if (mvTextRows[i].size() <= 1)
 		{
 			fY += fSize[lSize];
 		}
 
-		if(fY >= -fSize[lSize])
+		if (fY >= -fSize[lSize])
 		{
-			if(fY > 600) continue;
+			if (fY > screenSize.y) continue;
 
-			float fAlpha = fY/300;
-			if(fAlpha > 1) fAlpha = (2 - fAlpha);
-			
-			if(lSize==0)
-				mpFont->Draw(cVector3f(400,fY,10),fSize[lSize],cColor(1,fAlpha),eFontAlign_Center,
-							mvTextRows[i].c_str());
+			float fAlpha = fY / (screenSize.y * 0.5f);
+			if (fAlpha > 1)
+				fAlpha = (2 - fAlpha);
+
+			if (lSize == 0)
+				mpFont->Draw(cVector3f(screenSize.x / 2, fY, 10), fSize[lSize], cColor(1, fAlpha), eFontAlign_Center,
+					mvTextRows[i].c_str());
 			else
-				mpFont->Draw(cVector3f(400,fY,10),fSize[lSize],cColor(0.8f,fAlpha),eFontAlign_Center,
-							mvTextRows[i].substr(1).c_str());
+				mpFont->Draw(cVector3f(screenSize.x / 2, fY, 10), fSize[lSize], cColor(0.8f, fAlpha), eFontAlign_Center,
+					mvTextRows[i].substr(1).c_str());
 		}
 		fY += fSize[lSize];
 	}

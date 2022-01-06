@@ -551,7 +551,7 @@ void cPlayerState_UseItemHaptX::OnUpdate(float afTimeStep)
 
 	/////////////////////////////////////////////////
 	// Move cross hair
-	cVector2f vCrossPos = pLowLevelHaptic->GetProxyScreenPos(cVector2f(800,600));
+	cVector2f vCrossPos = pLowLevelHaptic->GetProxyScreenPos(mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize());
 	mpPlayer->SetCrossHairPos(vCrossPos);
 
 	/////////////////////////////////////////////////

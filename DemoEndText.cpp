@@ -69,18 +69,16 @@ void cDemoEndText::Reset()
 
 void cDemoEndText::OnPostSceneDraw()
 {
-	if(mbActive==false) return;
-	if(mvTextures.empty()) return;
+	if (mbActive == false) return;
+	if (mvTextures.empty()) return;
 
-	mpInit->mpGraphicsHelper->ClearScreen(cColor(0,0));
+	mpInit->mpGraphicsHelper->ClearScreen(cColor(0, 0));
 
-	mpInit->mpGraphicsHelper->DrawTexture(mvTextures[mlCurrentImage],0,
-											cVector2f(800,600),cColor(mfAlpha,1));
-	
+	mpInit->mpGraphicsHelper->DrawTexture(mvTextures[mlCurrentImage], 0,
+		mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize(), cColor(mfAlpha, 1));
 }
 
 //-----------------------------------------------------------------------
-
 
 void cDemoEndText::OnDraw()
 {

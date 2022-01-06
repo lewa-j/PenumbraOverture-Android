@@ -70,12 +70,12 @@ void cMapLoadText::Reset()
 
 void cMapLoadText::OnPostSceneDraw()
 {
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 	mpInit->mpGraphicsHelper->ClearScreen(cColor(0,0));
-	mpInit->mpGraphicsHelper->DrawTexture(mpBack,0,cVector3f(800,600,0),cColor(1,1));
+	mpInit->mpGraphicsHelper->DrawTexture(mpBack,0,cVector3f(screenSize.x, screenSize.y,0),cColor(1,1));
 }
 
 //-----------------------------------------------------------------------
-
 
 void cMapLoadText::OnDraw()
 {
@@ -86,6 +86,7 @@ void cMapLoadText::OnDraw()
 
 void cMapLoadText::DrawText(bool abLoading)
 {
+	const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 	//mpTextFont->DrawWordWrap(	cVector3f(25,25,25),750,17,15,cColor(0.75f, 1, 0.75f, 1),
 	//							eFontAlign_Left,kTranslate(msTextCat, msTextEntry));
 
@@ -98,24 +99,23 @@ void cMapLoadText::DrawText(bool abLoading)
 
 	if(abLoading)
 	{
-		mpTextFont->Draw(cVector3f(400,550,25),17,cColor(0.75f, 0.75f, 0.75f, 1),
+		mpTextFont->Draw(cVector3f(screenSize.x/2, screenSize.y-50,25),17,cColor(0.75f, 0.75f, 0.75f, 1),
 			eFontAlign_Center,kTranslate("LoadTexts", "Loading").c_str());
 	}
 	else
 	{
 		tWString wsText = kTranslate("LoadTexts", "ClickToContinue");
 
-		mpTextFont->Draw(cVector3f(400,550,25),
+		mpTextFont->Draw(cVector3f(screenSize.x/2, screenSize.y-50,25),
 			17,cColor(0.75f*mfAlpha, 1, 0.75f*mfAlpha, 1),
 			eFontAlign_Center,wsText.c_str());
 
-		mpTextFont->Draw(cVector3f(401+ 10*sin(mfAlpha*kPi2f),551,23),
+		mpTextFont->Draw(cVector3f(screenSize.x/2 + 1 + 10*sin(mfAlpha*kPi2f),551,23),
 			17,cColor(0.1f, 0.1f, 0.1f, 0.7f),
 			eFontAlign_Center,wsText.c_str());
-		mpTextFont->Draw(cVector3f(399+ -10*sin(mfAlpha*kPi2f),549,23),
+		mpTextFont->Draw(cVector3f(screenSize.x/2 - 1 + -10*sin(mfAlpha*kPi2f),549,23),
 			17,cColor(0.1f, 0.1f, 0.1f, 0.7f),
 			eFontAlign_Center,wsText.c_str());
-
 	}
 }
 
@@ -173,9 +173,10 @@ void cMapLoadText::SetActive(bool abX)
 		mpInit->mpButtonHandler->ChangeState(eButtonHandlerState_MapLoadText);
 
 		mpBack = mpInit->mpGame->GetResources()->GetTextureManager()->Create2D("other_load_text_back.jpg",false);
-		
+
+		const cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
 		mpInit->mpGraphicsHelper->ClearScreen(cColor(0,0));
-		mpInit->mpGraphicsHelper->DrawTexture(mpBack,0,cVector3f(800,600,0),cColor(1,1));
+		mpInit->mpGraphicsHelper->DrawTexture(mpBack,0,cVector3f(screenSize.x, screenSize.y, 0),cColor(1,1));
 		DrawText(true);
 		mpDrawer->DrawAll();
 		mpInit->mpGraphicsHelper->SwapBuffers();

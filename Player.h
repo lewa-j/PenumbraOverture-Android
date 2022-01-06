@@ -319,7 +319,7 @@ public:
 	cVector2f GetCrossHairPos(){ return mvCrossHairPos;}
 	void SetCrossHairPos(const cVector2f& avPos) { mvCrossHairPos = avPos;}
 	bool AddCrossHairPos(const cVector2f& avPos);
-	void ResetCrossHairPos() { mvCrossHairPos = cVector2f(400, 300);}
+	void ResetCrossHairPos() { mvCrossHairPos = mpGraphics->GetLowLevel()->GetVirtualSize() * 0.5f; }
 
 	void SetCurrentItem(cInventoryItem *apItem){ mpCurrentItem = apItem;}
 	cInventoryItem* GetCurrentItem(){ return mpCurrentItem;}

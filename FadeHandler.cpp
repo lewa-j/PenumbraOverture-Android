@@ -161,13 +161,15 @@ void cFadeHandler::Reset()
 
 void cFadeHandler::OnDraw()
 {
+	cVector2f screenSize = mpInit->mpGame->GetGraphics()->GetLowLevel()->GetVirtualSize();
+
 	if(mfAlpha !=0)
-		mpDrawer->DrawGfxObject(mpBlackGfx,cVector3f(0,0,150),cVector2f(800,600),cColor(1,mfAlpha));
+		mpDrawer->DrawGfxObject(mpBlackGfx,cVector3f(0,0,150), screenSize,cColor(1,mfAlpha));
 
 	if(mfWideScreenAlpha != 0)
 	{
-		mpDrawer->DrawGfxObject(mpBlackGfx,cVector3f(0,0,40),cVector2f(800,75),cColor(1,mfWideScreenAlpha));
-		mpDrawer->DrawGfxObject(mpBlackGfx,cVector3f(0,525,40),cVector2f(800,75),cColor(1,mfWideScreenAlpha));
+		mpDrawer->DrawGfxObject(mpBlackGfx, cVector3f(0, 0, 40), cVector2f(screenSize.x, 75), cColor(1, mfWideScreenAlpha));
+		mpDrawer->DrawGfxObject(mpBlackGfx, cVector3f(0, screenSize.y - 75, 40), cVector2f(screenSize.x, 75), cColor(1, mfWideScreenAlpha));
 	}
 }
 
